@@ -17,7 +17,8 @@ class Asssassino(Jogador):
         self.vida = 50
         self.acoes_ataque: dict[int, Callable[[], int]] = {
             1: self.atacar,
-            2: self.ataque_especial
+            2: self.ataque_area,
+            3: self.ataque_especial
         }
         self.acoes_buff: dict[int, Callable[[], None]] = {}
     
@@ -56,6 +57,32 @@ class Asssassino(Jogador):
             return 28
 
 
+    def ataque_area(self) -> int:
+        if self.batalha == None:
+            return 0 # So pra n dar erro na IDE
+        cura: int = 0
+        dano: int = 0
+        print('\nVocê avança com sua adaga, fazendo movimentos rápidos e mirando em todos em sua frente...')
+        self.contagem_regressiva(3)
+        atkJ = self.rolar_dados(6, 1)
+        if atkJ == 1:
+            print('\nInfelizmente você erra o ataque.')
+        elif atkJ == 6:
+            dano = 12
+            cura = 4
+            print(f'{YELLOW}\nVocê acerta um golpe crítico em todos os inimigos!!!\n[[Causou {dano} de dano a todos]]\n[[Recuperou {cura} de vida]]{RESET}')
+        else:
+            dano = 6
+            cura = 2
+            print(f'\nVocê acerta seu golpe em todos os inimigos!\n[[Causou {dano} de dano a todos]]\n[[Recuperou {cura} de vida]]')
+
+        self.vida += cura
+        for inimigo in self.batalha.inimigos:
+            inimigo.vida -= dano
+        
+        return 0 # So pra n dar erro na IDE
+
+
 #Menus
     def menu_ataque(self) -> None:
         """Cria um menu para a escolha de ações de ataque."""
@@ -63,7 +90,8 @@ class Asssassino(Jogador):
             return
 
         print("1- Atacar (dano em 1 alvo)")
-        print('2- ATAQUE ESPECIAL disponível! (25 de dano normal/50 de dano crítico)')
+        print("2- Ataque em área")
+        print('3- ATAQUE ESPECIAL disponível! (25 de dano normal/50 de dano crítico)')
         
         while True:
             escolha = input()
@@ -153,6 +181,7 @@ class Asssassino(Jogador):
         """Mostra os status do paladino"""
         print('\nVida do Assassino: {}'.format(self.vida))
         print()
+
 
     def turno(self):
         self.menu_acoes()
