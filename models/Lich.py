@@ -1,10 +1,15 @@
+#Lógica para funcionamento do Lich
 #Libs
 from .Criatura import Criatura
-from .Jogador import Jogador
+from .Jogadores.jogador import Jogador
 from typing import Union, Callable
 
+
+#Classes
 class Esqueleto(Criatura):
+    """Classe específica para criar um esqueleto."""
     def __init__(self) -> None:
+        """Cria uma instância de esqueleto com as características básicas."""
         self.nome = "esqueleto"
         self.vida = 10
         self.acoes: dict[int, Callable[[], Union[int, None]]] = {
@@ -12,56 +17,63 @@ class Esqueleto(Criatura):
         }
 
     def mostrar_stats(self):
+        """Mostra os status do esqueleto."""
         print('Vida do Esqueleto: {}'.format(self.vida))
         print()
 
 
     def atacar(self) -> int:
+        """Lógica para um ataque básico de espada."""
         print('\nO esqueleto corre em sua direção com a espada levantada...')
         self.contagem_regressiva(3)
-        atkL = self.rolarD6(1)
+        atkL = self.rolar_dados(6, 1)
         if atkL == 1:
             print('\nVocê consegue desviar do ataque a tempo!')
             return 0
         elif atkL == 6:
-            print('\nELE TE ACERTA EM CHEIO!!!\n[[Causou 10 de dano]]')
-            return 10
+            print('\nELE TE ACERTA EM CHEIO!!!\n[[Causou 8 de dano]]')
+            return 8
         else:
-            print('\nEle te corta.\n[[Causou 5 de dano]]')
-            return 5
+            print('\nEle te corta.\n[[Causou 4 de dano]]')
+            return 4
 
 
     def turno(self) -> Union[int, None]:
+        """Lógica do turno de um esqueleto comum."""
         if self.batalha == None:
             return
-        alvo = next((i for i,a in enumerate(self.batalha.criaturas) if isinstance(a, Jogador)), None)
+        alvo = next((i for i,a in enumerate(self.batalha.jogadores) if isinstance(a, Jogador)), None)
         if alvo == None:
             return
         
         valor = self.atacar()
         if valor != None: # type: ignore
-            self.batalha.criaturas[alvo].vida -= valor
+            self.batalha.jogadores[alvo].vida -= valor
         
         return alvo
 
 
 class Lich(Esqueleto):
+    """Classe para controlar o Lich. Ele inicia com algumas características de um esqueleto básico."""
     def __init__(self) -> None:
+        """Inicia características próprias, o resto é a da classe base Esqueleto."""
         self.nome = "lich"
         self.vida = 100
 
     def mostrar_stats(self):
+        """Mostra os status do Lich."""
         print('Vida do Lich: {}'.format(self.vida))
         print()
 
 
     #Ações
     def invocar_esqueleto(self) -> Union[int, None]:
+        """Invoca um esqueleto e o adiciona a instância da batalha atual."""
         if self.batalha == None:
             return
         print('\nO Lich toca na terra, fazendo-a tremer...')
         self.contagem_regressiva(3)
-        atkL = self.rolarD6(1)
+        atkL = self.rolar_dados(6, 1)
         if atkL == 1:
             print('\nNada acontece')
         elif atkL == 6:
@@ -70,19 +82,20 @@ class Lich(Esqueleto):
             esqueleto2 = Esqueleto()
             esqueleto1.batalha = self.batalha
             esqueleto2.batalha = self.batalha
-            self.batalha.criaturas.append(esqueleto1)
-            self.batalha.criaturas.append(esqueleto2)
+            self.batalha.inimigos.append(esqueleto1)
+            self.batalha.inimigos.append(esqueleto2)
         else:
             print('\nUm esqueleto surge da terra.')
             esqueleto = Esqueleto()
             esqueleto.batalha = self.batalha
-            self.batalha.criaturas.append(esqueleto)
+            self.batalha.inimigos.append(esqueleto)
 
 
     def atacar(self) -> int:
+        """Lógica para um ataque básico do Lich."""
         print('\nO Lich levanta suas mãos, invocando um raio necromante...')
         self.contagem_regressiva(3)
-        atkL = self.rolarD6(1)
+        atkL = self.rolar_dados(6, 1)
         if atkL == 1:
             print('\nVocê consegue desviar da magia a tempo!')
             return 0
@@ -95,7 +108,8 @@ class Lich(Esqueleto):
 
 
     def escolher_acao(self) -> Union[int, None]:
-        escolha = self.rolarD2(1)
+        """Função que escolhe aleatóriamente qual será a ação do lich em batalha."""
+        escolha = self.rolar_dados(2,1)
 
         match escolha:
             case 1:
@@ -108,14 +122,15 @@ class Lich(Esqueleto):
 
 
     def turno(self) -> Union[int, None]:
+        """Lógica de um turno do Lich em combate."""
         if self.batalha == None:
             return
-        alvo = next((i for i,a in enumerate(self.batalha.criaturas) if isinstance(a, Jogador)), None)
+        alvo = next((i for i,a in enumerate(self.batalha.criaturas["jogadores"]) if isinstance(a, Jogador)), None)
         if alvo == None:
             return
         
         valor = self.escolher_acao()
         if valor != None: # type: ignore
-            self.batalha.criaturas[alvo].vida -= valor
+            self.batalha.criaturas["jogadores"][alvo].vida -= valor
         
         return alvo

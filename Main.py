@@ -1,12 +1,15 @@
+#Inicia o programa
 # Libs
 from models.Criatura import Criatura
-from models.Jogador import Jogador
+from models.Jogadores.Paladino import Paladino
+from models.Jogadores.Assassino import Asssassino
 from models.Lich import Lich
 from models.batalha import Batalha
 
 
 #Variaveis globais
-criaturas: list[Criatura] = []
+inimigos: list[Criatura] = []
+jogadores: list[Criatura] = []
 
 
 #Main
@@ -22,16 +25,18 @@ while True:
         exit()
 
 lich = Lich()
-jogador = Jogador()
+jogador = Asssassino()
+jogador2 = Paladino()
 
-criaturas.append(lich)
-criaturas.append(jogador)
+inimigos.append(lich)
+jogadores.append(jogador)
+jogadores.append(jogador2)
 
-batalha = Batalha(criaturas)
+batalha = Batalha(inimigos, jogadores)
 
 vencedor = batalha.iniciar()
 
 if vencedor == jogador:
     print('\nApesar de todo o seu esforço, não foi o suficiente.\nVocê morreu, e o grande General dos Mortos sai vitorioso por mais uma era.')
-elif vencedor == lich: # type: ignore
+elif vencedor == lich:
     print('\nINCRÍVEL!!! Você conseguiu derrotar o temido Lich.\nDepois de todos os perrengues, o seu esforço deu resultados. Meus parabéns!\nVocê zerou o jogo.')

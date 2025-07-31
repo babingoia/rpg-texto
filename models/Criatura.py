@@ -1,3 +1,4 @@
+# Classe base de qualquer criatura
 #livs
 from __future__ import annotations
 from typing import Union, TYPE_CHECKING
@@ -15,17 +16,29 @@ RESET = '\033[0m'
 
 #classses
 class Criatura:
-    def __init__(self) -> None:
+    """Classe que possui os métodos e atributos básicos de uma criatura"""
+    def __init__(self, batalha: Union[Batalha, None]=None) -> None:
+        """Atributos básicos de uma criatura
+        
+        Args:
+            Batalha: Pode carregar uma instância de batalha na criatura diretamente. Por padrão é None.
+        """
         self.vida = 0
         self.nome = None
-        self.batalha: Union[Batalha, None] = None
+        self.batalha: Union[Batalha, None] = batalha
 
 
     def mostrar_stats(self) -> None:
+        """Mostra todos os status da criatura. Precisa ser implementado individualmente em subclasses."""
         pass
 
 
     def contagem_regressiva(self, segundos: int) -> None:
+        """Inicia uma contagem regressiva.
+        
+        Args:
+            segundos: quantidade de segundos que a contagem vai demorar.
+        """
         for i in range(segundos, 0, -1):
             print(f"{i}...", end=' ', flush=True)
             time.sleep(1)
@@ -33,40 +46,25 @@ class Criatura:
 
 
     #Dados
-    def rolarD2(self, n_dados: int, valor: int = 0):
-                
-        valor += random.randint(1,2)
+    def rolar_dados(self, dado: int, n_dados: int, valor: int = 0) -> int:
+        """Rola um dado de x lados x vezes.
+        
+        Args:
+            dado: Quantidade de lados do dado a ser rolado.
+            n_dados: Quantidade de dados a serem rolados.
+            valor: É o número inicial sem nenhuma rolagem de dados, pode ser usado para atribuir um bônus inicial. Valor padrão 0.
+        """
+        valor += random.randint(1,dado)
         
         n_dados -= 1
         
         if n_dados > 0:
-            return self.rolarD8(n_dados, valor)
+            return self.rolar_dados(dado, n_dados, valor) #Loop recursivo.
 
         return valor    
-
-
-    def rolarD6(self, n_dados: int, valor: int=0) -> int:
-        
-        valor += random.randint(1,6)
-        
-        n_dados -= 1
-        
-        if n_dados > 0:
-            return self.rolarD8(n_dados, valor)
-
-        return valor
-    
-    def rolarD8(self, n_dados: int, valor: int=0) -> int:
-        
-        valor += random.randint(1,8)
-        
-        n_dados -= 1
-        
-        if n_dados > 0:
-            return self.rolarD8(n_dados, valor)
-
-        return valor
     
 
     def turno(self) -> Union[int, None]:
+        """Executa a lógica de combate do turno da criatura. Deve ser implementado em toda subclasse para que o combate funcione adequadamente.
+        """
         pass
