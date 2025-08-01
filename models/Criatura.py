@@ -1,7 +1,7 @@
 # Classe base de qualquer criatura
 #livs
 from __future__ import annotations
-from typing import Union, TYPE_CHECKING
+from typing import Union, TYPE_CHECKING, Callable
 import random
 import time
 
@@ -26,6 +26,8 @@ class Criatura:
         self.vida = 0
         self.nome = None
         self.batalha: Union[Batalha, None] = batalha
+        self.acoes_ataque: dict[int, Callable[[], int]] = {}
+        self.acoes_buff: dict[int, Callable[[], None]] = {}
 
 
     def mostrar_stats(self) -> None:

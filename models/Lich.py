@@ -10,6 +10,7 @@ class Esqueleto(Criatura):
     """Classe específica para criar um esqueleto."""
     def __init__(self) -> None:
         """Cria uma instância de esqueleto com as características básicas."""
+        super().__init__()
         self.nome = "esqueleto"
         self.vida = 10
         self.acoes: dict[int, Callable[[], Union[int, None]]] = {
@@ -57,6 +58,7 @@ class Lich(Esqueleto):
     """Classe para controlar o Lich. Ele inicia com algumas características de um esqueleto básico."""
     def __init__(self) -> None:
         """Inicia características próprias, o resto é a da classe base Esqueleto."""
+        super().__init__()
         self.nome = "lich"
         self.vida = 100
 

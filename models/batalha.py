@@ -1,7 +1,7 @@
 # Classe base para instância de batalha
 #Libs
 from __future__ import annotations
-from os import system
+from os import system, name
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
@@ -44,7 +44,31 @@ class Batalha:
         
     def limpar_tela(self) -> None:
         """Limpa a tela do CMD"""
-        system("cls")
+        if name == 'nt':
+            system("cls")
+        else:
+            system("clear")
+
+    
+    def checar_morte(self):
+        """Verifica se algum inimigo morreu e remove ele do combate."""
+        inimigos_vivos: list[Criatura] = []
+        jogadores_vivos: list[Criatura] = []
+
+        for inimigo in self.inimigos:
+            if inimigo.vida > 0:
+                inimigos_vivos.append(inimigo)
+            else:
+                print(f"{inimigo.nome} foi destruido!")
+
+        for jogador in self.jogadores:
+            if jogador.vida > 0:
+                jogadores_vivos.append(jogador)
+            else:
+                print(f"{jogador.nome} foi destruido!")
+
+        self.inimigos = list(inimigos_vivos)
+        self.jogadores = list(jogadores_vivos)
 
 
     def iniciar(self) -> Union[list[Criatura], list[Jogador]]:
@@ -60,15 +84,13 @@ class Batalha:
 
         #Começa o loop de batalha
         while len(self.jogadores) > 0 and len(self.inimigos) > 0:
-            for key, lista_criaturas in self.criaturas.items():
-                for id, criatura in enumerate(lista_criaturas):
-                    if criatura.vida <= 0:
-                        print(f"Criatura: {criatura.nome} foi derrotada e não ataca.")
-                        del self.criaturas[key][id]
-                        continue
+            for lista_criaturas in self.criaturas.values():
+                for criatura in lista_criaturas:
                 
                     self.mostrar_stats_globais()
                     criatura.turno()
+                    self.checar_morte()
+
                     input("Aperte ENTER para continuar...")
                     self.limpar_tela()
             

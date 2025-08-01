@@ -1,18 +1,15 @@
 # Classe Paladino
 #Libs
+from ...consts import YELLOW, RESET
 from .jogador import Jogador
 from typing import Union, Callable
-
-
-#Consts
-YELLOW = '\033[93m'
-RESET = '\033[0m'
 
 
 class Paladino(Jogador):
     """Classe especifica para criar um paladino."""
     def __init__(self):
         """Cria uma instância de paladino com suas características básicas."""
+        super().__init__()
         self.nome = "paladino"
         self.vida = 70
         self.mana = 0
@@ -58,6 +55,8 @@ class Paladino(Jogador):
 
     def ataque_especial(self) -> int:
         """Ataque especial do paladino em combate."""
+        if self.mana < 5:
+            print("Mana insuficiente! Turno perdido...")
         print('\nVocê levanta sua espada, exibindo uma luz divina e vai pra cima do alvo com tudo o que tem, e...')
         self.contagem_regressiva(3)
         self.mana -= 5
@@ -100,100 +99,17 @@ class Paladino(Jogador):
     #Menus
     def menu_ataque(self) -> None:
         """Cria um menu para a escolha de ações de ataque."""
-        if self.batalha == None:
-            return
-
         print("1- Atacar (dano em 1 alvo)")
         print("2 - Bola de fogo (dano em área)")
         if self.mana >= 5:
             print('3- ATAQUE ESPECIAL disponível! (25 de dano normal/50 de dano crítico)')
-        
-        while True:
-            escolha = input()
-
-            if not escolha.isdigit():
-                print("Escolha inválida.")
-                continue
-
-            escolha = int(escolha)
-
-            acao = self.acoes_ataque.get(escolha)
-
-            if not acao:
-                print("Ação inválida.")
-                continue
-
-            if acao == self.acoes_ataque.get(3) and self.mana < 5:
-                print("Tá tentando burlar o esquema né princesa.")
-                continue
-
-            print("Escolha um alvo:")
-            for index, alvo in enumerate(self.batalha.inimigos):
-                print(f"{index} = {alvo.nome}")
-
-            alvo = input()
-
-            if not alvo.isdigit():
-                print("Alvo inválido, turno perdido.")
-                return
-                
-            alvo = int(alvo)
-            if not self.batalha.inimigos[alvo]:
-                print("Alvo inválido, turno perdido.")
-                return
-            
-            valor = self.acoes_ataque[escolha]()
-            self.batalha.inimigos[alvo].vida -= valor
-            return
+        self.gerenciar_menu_ataque()
 
     
-    def menu_buff(self) -> None:
+    def menu_buffs(self) -> None:
         """Cria um menu para a escolha de ações de buff."""
         print("1 - Se recuperar (Se cura em 2d8 e + 1 de stamina)")
-        while True:
-            escolha = input()
-
-            if not escolha.isdigit():
-                print("Escolha inválida.")
-                continue
-
-            escolha = int(escolha)
-
-            acao = self.acoes_buff.get(escolha)
-
-            if not acao:
-                print("Ação inválida.")
-                continue
-
-            self.acoes_buff[escolha]()
-            return
-
-
-    def menu_acoes(self) -> None:
-        """Cria um menu básico para o jogador escolher entre as ações que deseja executar."""
-
-        print('\nAgora é sua vez, o que deseja fazer?')
-        print('1- Atacar')
-        print('2- Se buffar')
-
-        while True:
-            escolha = input()
-
-            if not escolha.isdigit():
-                print("Escolha inválida, por favor tente novamente.")
-                continue
-
-            escolha = int(escolha)
-
-            match escolha:
-                case 1:
-                    self.menu_ataque()
-                    return
-                case 2:
-                   self.menu_buff()
-                   return
-                case _:
-                    print("Escolha fora dos limites, por favor tente novamente.")
+        self.gerenciar_menu_buffs()
 
 
     #Outros metodos
