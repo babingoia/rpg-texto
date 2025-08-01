@@ -57,6 +57,7 @@ class Paladino(Jogador):
         """Ataque especial do paladino em combate."""
         if self.mana < 5:
             print("Mana insuficiente! Turno perdido...")
+            return 0
         print('\nVocê levanta sua espada, exibindo uma luz divina e vai pra cima do alvo com tudo o que tem, e...')
         self.contagem_regressiva(3)
         self.mana -= 5

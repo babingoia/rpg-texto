@@ -32,7 +32,7 @@ class Criatura:
 
     def mostrar_stats(self) -> None:
         """Mostra todos os status da criatura. Precisa ser implementado individualmente em subclasses."""
-        pass
+        raise NotImplementedError
 
 
     def contagem_regressiva(self, segundos: int) -> None:
@@ -69,4 +69,4 @@ class Criatura:
     def turno(self) -> Union[int, None]:
         """Executa a lógica de combate do turno da criatura. Deve ser implementado em toda subclasse para que o combate funcione adequadamente.
         """
-        pass
+        raise NotImplementedError

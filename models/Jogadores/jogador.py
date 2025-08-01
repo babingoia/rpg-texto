@@ -10,12 +10,12 @@ class Jogador(Criatura):
     
     def menu_buffs(self) -> None:
         """Mostra as opções de buff daquela classe. Precisa ser implementado na classe específica."""
-        pass
+        raise NotImplementedError
 
 
     def menu_ataque(self) -> None:
         """Mostra as opções de ataque daquela classe. Precisa ser implementado na classe específica."""
-        pass
+        raise NotImplementedError
 
 
     def menu_acoes(self) -> None:
@@ -37,12 +37,13 @@ class Jogador(Criatura):
             match escolha:
                 case 1:
                     self.menu_ataque()
-                    return
+                    return None
                 case 2:
                    self.menu_buffs()
-                   return
+                   return None
                 case _:
                     print("Escolha fora dos limites, por favor tente novamente.")
+                    return None
 
 
     def gerenciar_menu_ataque(self) -> None:
@@ -67,21 +68,27 @@ class Jogador(Criatura):
             print("Escolha um alvo:")
             for index, alvo in enumerate(self.batalha.inimigos):
                 print(f"{index} = {alvo.nome}")
-
-            alvo = input()
-
-            if not alvo.isdigit():
-                print("Alvo inválido, turno perdido.")
-                return
-                
-            alvo = int(alvo)
-            if not self.batalha.inimigos[alvo]:
-                print("Alvo inválido, turno perdido.")
-                return
             
-            valor = self.acoes_ataque[escolha]()
-            self.batalha.inimigos[alvo].vida -= valor
-            return
+            while True:
+                alvo = input()
+
+                if not alvo.isdigit():
+                    print("Alvo inválido, tente novamente.")
+                    continue
+                
+                alvo = int(alvo)
+
+                if not (0 <= alvo < len(self.batalha.inimigos)):
+                    print("Alvo inválido, tente novamente.")
+                    continue
+
+                if not self.batalha.inimigos[alvo]:
+                    print("Alvo inválido, tente novamente.")
+                    continue
+            
+                valor = self.acoes_ataque[escolha]()
+                self.batalha.inimigos[alvo].vida -= valor
+                return
 
 
     def gerenciar_menu_buffs(self) -> None:
