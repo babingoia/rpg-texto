@@ -29,6 +29,8 @@ class Configuracoes:
 
         FALHA = 1
         CRITICO = 6
+        RESTAURACAO_MANA_CRITICO = 1
+        MULTIPLICADOR_CRITICO = 2
         DELAY_ACAO = 3
     
 
@@ -38,13 +40,39 @@ class Configuracoes:
         PALADINO = { # type: ignore
             'nome': 'Paladino',
             'vida': 80,
-            'mana': 0
+            'mana': 0,
+
+            'id_ataque_basico': 1,
+            'dano_ataque_basico': 10,
+
+            'id_bola_fogo': 2,
+            'dano_bola_fogo': 5,
+
+            'id_ataque_especial': 3,
+            'dano_ataque_especial': 25,
+            'custo_ataque_especial': 5,
+
+            'id_recuperar_folego': 1,
+            'quantidade_dados_recuperar_folego': 2,
+            'restauração_mana_recuperar_folego': 1,
         }
 
         ASSASSINO = { # type: ignore
             'nome': 'Assassino',
             'vida': 50,
-            'mana': 0
+            'mana': 0,
+
+            'id_ataque_basico': 1,
+            'dano_ataque_basico': 12,
+            'cura_ataque_basico': 4,
+            
+            'id_ataque_area': 2,
+            'dano_ataque_area': 6,
+            'cura_ataque_area': 2,
+            
+            'id_ataque_especial': 3,
+            'dano_ataque_especial': 28,
+            'custo_ataque_especial': 4,
         
         }
     
@@ -55,11 +83,21 @@ class Configuracoes:
         ESQUELETO = { # type: ignore
             'nome': 'esqueleto',
             'vida': 10,
-            'mana': 0
+            'mana': 0,
+            'dano_ataque_basico': 4,
         }
 
         LICH = { # type: ignore
             'nome': 'Lich',
             'vida': 100,
-            'mana': 0
+            'mana': 0,
+            'dano_ataque_basico': 10,
+            'quantidade_esqueletos_invocados': 1
         }
+
+
+    class Menus:
+        """Constantes de configurações de menus."""
+
+        MENU_ATAQUE = 1
+        MENU_BUFFS = 2
