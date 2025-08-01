@@ -1,6 +1,6 @@
 # Classe Paladino
 #Libs
-from ...configs import Configuracoes as cfg
+from configs import PALADINO, Combate, Dados, Cores
 from .jogador import Jogador
 from typing import Union, Callable
 
@@ -10,19 +10,19 @@ class Paladino(Jogador):
     def __init__(self):
         """Cria uma instância de paladino com suas características básicas."""
         super().__init__()
-        self.nome = "paladino"
-        self.vida = 80
-        self.mana = 0
+        self.nome = PALADINO.NOME
+        self.vida: int = PALADINO.VIDA
+        self.mana: int = PALADINO.MANA
 
         #Esse distinção de ações é importante por conta que umas precisam de alvo e outras não.
         self.acoes_ataque: dict[int, Callable[[], int]] = {
-            1: self.atacar,
-            2: self.bola_de_fogo,
-            3: self.ataque_especial
+            PALADINO.ID_ATAQUE_BASICO: self.atacar,
+            PALADINO.ID_BOLA_FOGO: self.bola_de_fogo,
+            PALADINO.ID_ATAQUE_ESPECIAL: self.ataque_especial
         }
 
         self.acoes_buff: dict[int, Callable[[], None]] = {
-            1: self.recuperar_folego
+            PALADINO.ID_RECUPERAR_FOLEGO: self.recuperar_folego
         }
 
         
@@ -31,15 +31,19 @@ class Paladino(Jogador):
     def atacar(self) -> int:
         """Ataque básico do paladino em combate."""
         print('\nVocê segura sua espada com força, e vai pra cima do alvo, e...')
-        self.contagem_regressiva(3)
-        rolagem = self.rolar_dados(6, 1)
-        if rolagem == 1:
+        
+        self.contagem_regressiva(Combate.DELAY_MEDIO)
+        rolagem = self.rolar_dados(Dados.D6, 1)
+        
+        if rolagem == Combate.FALHA:
             print('\nInfelizmente você erra o ataque.')
-            return 0
-        elif rolagem == 6:
-            print(f'{cfg.Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 20 de dano]]\n[[Recuperou 1 de stamina]]{cfg.Cores.RESET}')
-            self.mana += 1
-            return 20
+            return Combate.DANO_FALHA
+        
+        elif rolagem == Combate.CRITICO:
+            print(f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 20 de dano]]\n[[Recuperou 1 de stamina]]{Cores.RESET}')
+            self.mana += PALADINO.RESTAURACAO_MANA_CRITICO
+            return PALADINO.DANO_ATAQUE_BASICO * PALADINO.MULTIPLICADOR_CRITICO
+        
         else:
             print('\nVocê acerta seu golpe no alvo!\n[[Causou 10 de dano]]')
             return 10
@@ -47,69 +51,87 @@ class Paladino(Jogador):
 
     def recuperar_folego(self) -> None:
         """Ação de cura do paladino em combate."""
-        cura = self.rolar_dados(10,2)
+        cura = self.rolar_dados(PALADINO.TIPO_DADO_RECUPERAR_FOLEGO,PALADINO.QUANTIDADE_DADOS_RECUPERAR_FOLEGO)
         print(f'\nVocê respira fundo e consegue recuperar parte da sua força.\n[[Curou {cura} de vida]]\n[[Recuperou 1 de stamina]]')
-        self.vida = min(self.vida + cura, 80)
-        self.mana += 1
+
+        self.vida = min(self.vida + cura, PALADINO.VIDA)
+        self.mana += PALADINO.RESTAURACAO_MANA_RECUPERAR_FOLEGO
 
 
     def ataque_especial(self) -> int:
         """Ataque especial do paladino em combate."""
-        if self.mana < 5:
+        if self.mana < PALADINO.CUSTO_ATAQUE_ESPECIAL:
             print("Mana insuficiente! Turno perdido...")
             return 0
+        
         print('\nVocê levanta sua espada, exibindo uma luz divina e vai pra cima do alvo com tudo o que tem, e...')
-        self.contagem_regressiva(3)
-        self.mana -= 5
-        atkJ = self.rolar_dados(6, 1)
-        if atkJ == 1:
+        
+        self.contagem_regressiva(Combate.DELAY_MEDIO)
+        self.mana -= PALADINO.CUSTO_ATAQUE_ESPECIAL
+        atkJ = self.rolar_dados(Dados.D6, 1)
+        
+        if atkJ == Combate.FALHA:
             print('\nInfelizmente você erra o ataque.')
             return 0
-        elif atkJ == 6:
-            print(f'{cfg.Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 50 de dano]]{cfg.Cores.RESET}')
-            return 50
+        
+        elif atkJ == Combate.CRITICO:
+            print(f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 50 de dano]]{Cores.RESET}')
+            return PALADINO.DANO_ATAQUE_ESPECIAL * PALADINO.MULTIPLICADOR_CRITICO
+        
         else:
             print('\nVocê acerta seu golpe no alvo!\n[[Causou 25 de dano]]')
-            return 25
+            return PALADINO.DANO_ATAQUE_ESPECIAL
 
 
     def bola_de_fogo(self) -> int:
         """Ataque em área do paladino em combate."""
+        N_PRA_NAO_DAR_ERRO = 0
         if self.batalha == None:
-            return 0
+            return N_PRA_NAO_DAR_ERRO
+        
         print('\nVocê junta a suas mãos e começa a canalizar, uma energia magica começa a surgir e...')
-        self.contagem_regressiva(3)
-        rolagem = self.rolar_dados(6, 1)
-        if rolagem == 1:
+        self.contagem_regressiva(Combate.DELAY_MEDIO)
+        rolagem = self.rolar_dados(Dados.D6, 1)
+        
+        if rolagem == Combate.FALHA:
             print('\nA magia se desfaz no ar.')
-            return 0
-        elif rolagem == 6:
-            print(f'{cfg.Cores.YELLOW}\nVocê acerta ela numa explosão enorme!!!\n[[Causou 10 de dano em todos os alvos]]\n[[Recuperou 1 de stamina]]{cfg.Cores.RESET}')
-            self.mana += 1
+            return N_PRA_NAO_DAR_ERRO
+        
+        elif rolagem == Combate.CRITICO:
+
+            dano = PALADINO.DANO_BOLA_FOGO * PALADINO.MULTIPLICADOR_CRITICO
+
+            print(f'{Cores.YELLOW}\nVocê acerta ela numa explosão enorme!!!\n[[Causou {dano} de dano em todos os alvos]]\n[[Recuperou {PALADINO.RESTAURACAO_MANA_CRITICO} de mana]]{Cores.RESET}')
+            
+            self.mana += PALADINO.RESTAURACAO_MANA_CRITICO
+            
             for inimigo in self.batalha.inimigos:
-                inimigo.vida -= 10
-            return 0
+                inimigo.vida -= dano
+            return N_PRA_NAO_DAR_ERRO
+        
         else:
-            print('\nVocê acerta seu golpe e todos os inimigos sofrem queimaduras!\n[[Causou 5 de dano em todos os alvos]]')
+            dano = PALADINO.DANO_BOLA_FOGO
+
+            print(f'\nVocê acerta seu golpe e todos os inimigos sofrem queimaduras!\n[[Causou {dano} de dano em todos os alvos]]')
 
             for inimigo in self.batalha.inimigos:
-                inimigo.vida -= 5
-            return 0
+                inimigo.vida -= dano
+            return N_PRA_NAO_DAR_ERRO
 
 
     #Menus
     def menu_ataque(self) -> None:
         """Cria um menu para a escolha de ações de ataque."""
-        print("1- Atacar (dano em 1 alvo)")
-        print("2 - Bola de fogo (dano em área)")
-        if self.mana >= 5:
-            print('3- ATAQUE ESPECIAL disponível! (25 de dano normal/50 de dano crítico)')
+        print(f"{PALADINO.ID_ATAQUE_BASICO}- Atacar (dano em 1 alvo)")
+        print(f"{PALADINO.ID_BOLA_FOGO} - Bola de fogo (dano em área)")
+        if self.mana >= PALADINO.CUSTO_ATAQUE_ESPECIAL:
+            print(f'{PALADINO.ID_ATAQUE_ESPECIAL} - ATAQUE ESPECIAL disponível! (25 de dano normal/50 de dano crítico)')
         self.gerenciar_menu_ataque()
 
     
     def menu_buffs(self) -> None:
         """Cria um menu para a escolha de ações de buff."""
-        print("1 - Se recuperar (Se cura em 2d8 e + 1 de stamina)")
+        print(f"{PALADINO.ID_RECUPERAR_FOLEGO} - Se recuperar (Se cura em 2d8 e + 1 de stamina)")
         self.gerenciar_menu_buffs()
 
 

@@ -3,101 +3,125 @@
 
 
 #Classes
-class Configuracoes:
-    """Biblioteca que guarda as configurações do projeto."""
     
-    class Cores:
-        """Subbiblioteca com as cores"""
-        YELLOW = '\033[93m'
-        RESET = '\033[0m'
+class Cores:
+    """Subbiblioteca com as cores"""
+    YELLOW = '\033[93m'
+    RESET = '\033[0m'
+    RED = '\033[91m'      
+    GREEN = '\033[92m'    
+    BLUE = '\033[94m'     
+    PURPLE = '\033[95m'
+
+
+class Dados:
+    """Subblioteca com os tipos de dados do projeto."""
+
+    D2 = 2
+    D4 = 4
+    D6 = 6
+    D8 = 8
+    D10 = 10
+    D12 = 12
+    D20 = 20
+
+
+class Combate:
+    """Guarda alguns valores especificos e importantes para combate."""
+    
+    #Rolagens
+    ROLAGEM_PADRAO: int = Dados.D6
+    DANO_FALHA = 0
+    FALHA = 1
+    CRITICO = 6
+
+    #Critico
+    RESTAURACAO_MANA_CRITICO = 1
+    MULTIPLICADOR_CRITICO_PADRAO = 2
+    
+    #Delays
+    DELAY_CURTO: int = 1
+    DELAY_MEDIO: int = 3
+    DELAY_LONGO: int = 5
+
+
+
+
+class PALADINO:
+    """Configurações básicas paladino"""
+    NOME: str = 'Paladino'
+    VIDA: int = 80
+    MANA: int = 0
+    MULTIPLICADOR_CRITICO: int = Combate.MULTIPLICADOR_CRITICO_PADRAO
+
+    ID_ATAQUE_BASICO: int = 1
+    DANO_ATAQUE_BASICO: int = 10
+    RESTAURACAO_MANA_CRITICO: int = 1
+
+    ID_BOLA_FOGO: int = 2
+    DANO_BOLA_FOGO: int = 5
+
+    ID_ATAQUE_ESPECIAL: int = 3
+    DANO_ATAQUE_ESPECIAL: int = 25
+    CUSTO_ATAQUE_ESPECIAL: int = 5
+
+    ID_RECUPERAR_FOLEGO: int = 1
+    TIPO_DADO_RECUPERAR_FOLEGO: int = Dados.D10
+    QUANTIDADE_DADOS_RECUPERAR_FOLEGO: int = 2
+    RESTAURACAO_MANA_RECUPERAR_FOLEGO: int = 1
+
+class ASSASSINO: 
+    """Configurações da classe de Assassino"""
+
+    NOME: str = 'Assassino'
+    VIDA: int = 50
+    MANA: int = 0
+    MULTIPLICADOR_CRITICO: int = Combate.MULTIPLICADOR_CRITICO_PADRAO
+
+
+    ID_ATAQUE_BASICO: int = 1
+    DANO_ATAQUE_BASICO: int = 12
+    CURA_ATAQUE_BASICO: int = 4
+    
+    ID_ATAQUE_AREA: int = 2
+    DANO_ATAQUE_AREA: int = 6
+    CURA_ATAQUE_AREA: int = 2
+    
+    ID_ATAQUE_ESPECIAL: int = 3
+    DANO_ATAQUE_ESPECIAL: int = 28
+    CUSTO_ATAQUE_ESPECIAL: int = 4
     
 
-    class Dados:
-        """Subblioteca com os tipos de dados do projeto."""
+class ESQUELETO:
+    """Configurações da classe Esqueleto."""
 
-        D2 = 2
-        D4 = 4
-        D6 = 6
-        D8 = 8
-        D10 = 10
-        D12 = 12
-        D20 = 20
+    NOME: str = 'esqueleto'
+    VIDA: int = 10
+    MANA: int = 0
+    MULTIPLICADOR_CRITICO: int = Combate.MULTIPLICADOR_CRITICO_PADRAO
 
-    
-    class Combate:
-        """Guarda alguns valores especificos e importantes para combate."""
-
-        FALHA = 1
-        CRITICO = 6
-        RESTAURACAO_MANA_CRITICO = 1
-        MULTIPLICADOR_CRITICO = 2
-        DELAY_ACAO = 3
-    
-
-    class Classes:
-        """Configurações básicas de balanceamento pras classes."""
-
-        PALADINO = { # type: ignore
-            'nome': 'Paladino',
-            'vida': 80,
-            'mana': 0,
-
-            'id_ataque_basico': 1,
-            'dano_ataque_basico': 10,
-
-            'id_bola_fogo': 2,
-            'dano_bola_fogo': 5,
-
-            'id_ataque_especial': 3,
-            'dano_ataque_especial': 25,
-            'custo_ataque_especial': 5,
-
-            'id_recuperar_folego': 1,
-            'quantidade_dados_recuperar_folego': 2,
-            'restauração_mana_recuperar_folego': 1,
-        }
-
-        ASSASSINO = { # type: ignore
-            'nome': 'Assassino',
-            'vida': 50,
-            'mana': 0,
-
-            'id_ataque_basico': 1,
-            'dano_ataque_basico': 12,
-            'cura_ataque_basico': 4,
-            
-            'id_ataque_area': 2,
-            'dano_ataque_area': 6,
-            'cura_ataque_area': 2,
-            
-            'id_ataque_especial': 3,
-            'dano_ataque_especial': 28,
-            'custo_ataque_especial': 4,
-        
-        }
-    
-
-    class Inimigos:
-        """Configurações básicas de balanceamento para os inimigos."""
-
-        ESQUELETO = { # type: ignore
-            'nome': 'esqueleto',
-            'vida': 10,
-            'mana': 0,
-            'dano_ataque_basico': 4,
-        }
-
-        LICH = { # type: ignore
-            'nome': 'Lich',
-            'vida': 100,
-            'mana': 0,
-            'dano_ataque_basico': 10,
-            'quantidade_esqueletos_invocados': 1
-        }
+    ID_ATAQUE_BASICO: int = 1
+    DANO_ATAQUE_BASICO: int = 4
 
 
-    class Menus:
-        """Constantes de configurações de menus."""
+class LICH:
+    """Configuroções da classe de Lich."""
 
-        MENU_ATAQUE = 1
-        MENU_BUFFS = 2
+    NOME: str = 'Lich'
+    VIDA: int = 100
+    MANA: int = 0
+    MULTIPLICADOR_CRITICO: int = Combate.MULTIPLICADOR_CRITICO_PADRAO
+
+    ID_ATAQUE_BASICO: int = 1
+    DANO_ATAQUE_BASICO: int = 10
+
+    ID_INVOCAR_ESQUELETO: int = 2
+    QUANTIDADE_ESQUELETOS_INVOCADOS: int = 1
+
+
+
+class Menus:
+    """Constantes de configurações de menus."""
+
+    MENU_ATAQUE = 1
+    MENU_BUFFS = 2

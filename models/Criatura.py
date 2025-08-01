@@ -6,7 +6,7 @@ import random
 import time
 
 if TYPE_CHECKING:
-    from .Gerenciadores.batalha import Batalha
+    from Gerenciadores.batalha import Batalha
 
 
 #classses

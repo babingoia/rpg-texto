@@ -3,6 +3,7 @@
 from ..Criatura import Criatura
 from ..Jogadores.jogador import Jogador
 from typing import Union, Callable
+from configs import Dados, LICH, ESQUELETO, Combate
 
 
 #Classes
@@ -11,10 +12,10 @@ class Esqueleto(Criatura):
     def __init__(self) -> None:
         """Cria uma instância de esqueleto com as características básicas."""
         super().__init__()
-        self.nome = "esqueleto"
-        self.vida = 10
+        self.nome = ESQUELETO.NOME
+        self.vida = ESQUELETO.VIDA
         self.acoes: dict[int, Callable[[], Union[int, None]]] = {
-            1: self.atacar
+            ESQUELETO.ID_ATAQUE_BASICO: self.atacar
         }
 
     def mostrar_stats(self):
@@ -26,17 +27,23 @@ class Esqueleto(Criatura):
     def atacar(self) -> int:
         """Lógica para um ataque básico de espada."""
         print('\nO esqueleto corre em sua direção com a espada levantada...')
-        self.contagem_regressiva(3)
-        atkL = self.rolar_dados(6, 1)
-        if atkL == 1:
+        self.contagem_regressiva(Combate.DELAY_MEDIO)
+        atkL = self.rolar_dados(Dados.D6, 1)
+        dano = ESQUELETO.DANO_ATAQUE_BASICO
+        
+        if atkL == Combate.FALHA:
             print('\nVocê consegue desviar do ataque a tempo!')
-            return 0
-        elif atkL == 6:
-            print('\nELE TE ACERTA EM CHEIO!!!\n[[Causou 8 de dano]]')
-            return 8
+            dano = Combate.DANO_FALHA
+            return dano
+        
+        elif atkL == Combate.CRITICO:
+            dano *= ESQUELETO.MULTIPLICADOR_CRITICO
+            print('\nELE TE ACERTA EM CHEIO!!!\n[[Causou {dano} de dano]]')
+            return dano
+        
         else:
-            print('\nEle te corta.\n[[Causou 4 de dano]]')
-            return 4
+            print('\nEle te corta.\n[[Causou {} de dano]]')
+            return dano
 
 
     def turno(self) -> Union[int, None]:
@@ -59,8 +66,8 @@ class Lich(Esqueleto):
     def __init__(self) -> None:
         """Inicia características próprias, o resto é a da classe base Esqueleto."""
         super().__init__()
-        self.nome = "lich"
-        self.vida = 100
+        self.nome = LICH.NOME
+        self.vida = LICH.VIDA
 
     def mostrar_stats(self):
         """Mostra os status do Lich."""
@@ -71,23 +78,36 @@ class Lich(Esqueleto):
     #Ações
     def invocar_esqueleto(self) -> Union[int, None]:
         """Invoca um esqueleto e o adiciona a instância da batalha atual."""
+        
         if self.batalha == None:
             return
+        
+        n_esqueletos = LICH.QUANTIDADE_ESQUELETOS_INVOCADOS
+
         print('\nO Lich toca na terra, fazendo-a tremer...')
-        self.contagem_regressiva(3)
-        atkL = self.rolar_dados(6, 1)
-        if atkL == 1:
+        self.contagem_regressiva(Combate.DELAY_MEDIO)
+        atkL = self.rolar_dados(Dados.D6, 1)
+        
+        if atkL == Combate.FALHA:
             print('\nNada acontece')
-        elif atkL == 6:
-            print('\nDois esqueletos surgem da terra!')
-            esqueleto1 = Esqueleto()
-            esqueleto2 = Esqueleto()
-            esqueleto1.batalha = self.batalha
-            esqueleto2.batalha = self.batalha
-            self.batalha.inimigos.append(esqueleto1)
-            self.batalha.inimigos.append(esqueleto2)
+        
+        elif atkL == Combate.CRITICO:
+
+            n_esqueletos *= LICH.MULTIPLICADOR_CRITICO
+
+            print(f'\n {n_esqueletos} esqueletos surgem da terra!')
+
+            while n_esqueletos != 0:
+                esqueleto = Esqueleto()
+                
+                esqueleto.batalha = self.batalha
+                
+                self.batalha.inimigos.append(esqueleto)
+
+                n_esqueletos -= 1
+        
         else:
-            print('\nUm esqueleto surge da terra.')
+            print(f'\n {n_esqueletos} esqueleto surge da terra.')
             esqueleto = Esqueleto()
             esqueleto.batalha = self.batalha
             self.batalha.inimigos.append(esqueleto)
@@ -95,28 +115,35 @@ class Lich(Esqueleto):
 
     def atacar(self) -> int:
         """Lógica para um ataque básico do Lich."""
+
         print('\nO Lich levanta suas mãos, invocando um raio necromante...')
-        self.contagem_regressiva(3)
-        atkL = self.rolar_dados(6, 1)
-        if atkL == 1:
+        self.contagem_regressiva(Combate.DELAY_MEDIO)
+        atkL = self.rolar_dados(Dados.D6, 1)
+        dano = LICH. DANO_ATAQUE_BASICO
+
+        if atkL == Combate.FALHA:
+            dano = Combate.DANO_FALHA
             print('\nVocê consegue desviar da magia a tempo!')
-            return 0
-        elif atkL == 6:
-            print('\nELE TE ACERTA EM CHEIO!!!\n[[Causou 20 de dano]]')
-            return 20
+            return dano
+        
+        elif atkL == Combate.CRITICO:
+            dano *= LICH.MULTIPLICADOR_CRITICO
+            print(f'\nELE TE ACERTA EM CHEIO!!!\n[[Causou {dano} de dano]]')
+            return dano
+        
         else:
-            print('\nEle acerta o raio em você.\n[[Causou 10 de dano]]')
-            return 10
+            print(f'\nEle acerta o raio em você.\n[[Causou {dano} de dano]]')
+            return dano
 
 
     def escolher_acao(self) -> Union[int, None]:
         """Função que escolhe aleatóriamente qual será a ação do lich em batalha."""
-        escolha = self.rolar_dados(2,1)
+        escolha = self.rolar_dados(Dados.D2,1)
 
         match escolha:
-            case 1:
+            case LICH.ID_INVOCAR_ESQUELETO:
                 self.invocar_esqueleto()
-            case 2:
+            case LICH.ID_ATAQUE_BASICO:
                 valor = self.atacar()
                 return valor
             case _:

@@ -1,9 +1,8 @@
 #Classe base para um jogador.
 from models.Gerenciadores.batalha import Batalha
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from ..Criatura import Criatura
+#from typing import TYPE_CHECKING
+from configs import Menus
+from ..Criatura import Criatura
 
 
 class Jogador(Criatura):
@@ -38,10 +37,10 @@ class Jogador(Criatura):
             escolha = int(escolha)
 
             match escolha:
-                case 1:
+                case Menus.MENU_ATAQUE:
                     self.menu_ataque()
                     return None
-                case 2:
+                case Menus.MENU_BUFFS:
                    self.menu_buffs()
                    return None
                 case _:

@@ -25,7 +25,7 @@ def main():
         else:
             print('\nQue pena, talvez você precise de um pouco mais de tempo para se preparar então.\n')
             return
-
+        
     lich = Lich()
     jogador = Assassino()
     jogador2 = Paladino()
