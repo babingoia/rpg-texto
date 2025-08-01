@@ -2,9 +2,9 @@
 # Libs
 from models.Criatura import Criatura
 from models.Jogadores.Paladino import Paladino
-from models.Jogadores.Assassino import Asssassino
-from models.Lich import Lich
-from models.batalha import Batalha
+from models.Jogadores.Assassino import Assassino
+from models.Inimigos.Lich import Lich
+from models.Gerenciadores.batalha import Batalha
 from models.Jogadores.jogador import Jogador
 
 
@@ -27,7 +27,7 @@ def main():
             return
 
     lich = Lich()
-    jogador = Asssassino()
+    jogador = Assassino()
     jogador2 = Paladino()
 
     inimigos.append(lich)

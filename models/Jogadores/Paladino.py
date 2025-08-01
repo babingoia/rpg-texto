@@ -1,6 +1,6 @@
 # Classe Paladino
 #Libs
-from ...consts import YELLOW, RESET
+from ...configs import Configuracoes as cfg
 from .jogador import Jogador
 from typing import Union, Callable
 
@@ -11,7 +11,7 @@ class Paladino(Jogador):
         """Cria uma instância de paladino com suas características básicas."""
         super().__init__()
         self.nome = "paladino"
-        self.vida = 70
+        self.vida = 80
         self.mana = 0
 
         #Esse distinção de ações é importante por conta que umas precisam de alvo e outras não.
@@ -37,7 +37,7 @@ class Paladino(Jogador):
             print('\nInfelizmente você erra o ataque.')
             return 0
         elif rolagem == 6:
-            print(f'{YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 20 de dano]]\n[[Recuperou 1 de stamina]]{RESET}')
+            print(f'{cfg.Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 20 de dano]]\n[[Recuperou 1 de stamina]]{cfg.Cores.RESET}')
             self.mana += 1
             return 20
         else:
@@ -66,7 +66,7 @@ class Paladino(Jogador):
             print('\nInfelizmente você erra o ataque.')
             return 0
         elif atkJ == 6:
-            print(f'{YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 50 de dano]]{RESET}')
+            print(f'{cfg.Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 50 de dano]]{cfg.Cores.RESET}')
             return 50
         else:
             print('\nVocê acerta seu golpe no alvo!\n[[Causou 25 de dano]]')
@@ -84,7 +84,7 @@ class Paladino(Jogador):
             print('\nA magia se desfaz no ar.')
             return 0
         elif rolagem == 6:
-            print(f'{YELLOW}\nVocê acerta ela numa explosão enorme!!!\n[[Causou 10 de dano em todos os alvos]]\n[[Recuperou 1 de stamina]]{RESET}')
+            print(f'{cfg.Cores.YELLOW}\nVocê acerta ela numa explosão enorme!!!\n[[Causou 10 de dano em todos os alvos]]\n[[Recuperou 1 de stamina]]{cfg.Cores.RESET}')
             self.mana += 1
             for inimigo in self.batalha.inimigos:
                 inimigo.vida -= 10

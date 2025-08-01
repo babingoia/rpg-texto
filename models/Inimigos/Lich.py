@@ -1,7 +1,7 @@
 #Lógica para funcionamento do Lich
 #Libs
-from .Criatura import Criatura
-from .Jogadores.jogador import Jogador
+from ..Criatura import Criatura
+from ..Jogadores.jogador import Jogador
 from typing import Union, Callable
 
 
@@ -127,12 +127,12 @@ class Lich(Esqueleto):
         """Lógica de um turno do Lich em combate."""
         if self.batalha == None:
             return
-        alvo = next((i for i,a in enumerate(self.batalha.criaturas["jogadores"]) if isinstance(a, Jogador)), None)
+        alvo = next((i for i,a in enumerate(self.batalha.jogadores) if isinstance(a, Jogador)), None)
         if alvo == None:
             return
         
         valor = self.escolher_acao()
         if valor != None: # type: ignore
-            self.batalha.criaturas["jogadores"][alvo].vida -= valor
+            self.batalha.jogadores[alvo].vida -= valor
         
         return alvo

@@ -5,8 +5,8 @@ from os import system, name
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from .Criatura import Criatura
-    from .Jogadores.jogador import Jogador
+    from ..Criatura import Criatura
+    from ..Jogadores.jogador import Jogador
 
 #Classes
 class Batalha:

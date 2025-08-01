@@ -1,6 +1,9 @@
 #Classe base para um jogador.
-from models.batalha import Batalha
-from ..Criatura import Criatura
+from models.Gerenciadores.batalha import Batalha
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..Criatura import Criatura
 
 
 class Jogador(Criatura):
@@ -79,10 +82,6 @@ class Jogador(Criatura):
                 alvo = int(alvo)
 
                 if not (0 <= alvo < len(self.batalha.inimigos)):
-                    print("Alvo inválido, tente novamente.")
-                    continue
-
-                if not self.batalha.inimigos[alvo]:
                     print("Alvo inválido, tente novamente.")
                     continue
             

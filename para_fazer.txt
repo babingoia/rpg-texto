@@ -1,0 +1,1 @@
+-> Substituir os números mágicos pelas configs da lib de config.

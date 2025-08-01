@@ -1,13 +1,13 @@
 #Classe para o assassino
 #Libs
-from ...consts import YELLOW, RESET
-from models.batalha import Batalha
+from ...configs import Configuracoes as cfg
+from models.Gerenciadores.batalha import Batalha
 from .jogador import Jogador
 from typing import Callable
 
 
 #classes
-class Asssassino(Jogador):
+class Assassino(Jogador):
     def __init__(self, batalha: Batalha | None = None) -> None:
         super().__init__(batalha)
         self.nome = "Assassino"
@@ -28,7 +28,7 @@ class Asssassino(Jogador):
             print('\nInfelizmente você erra o ataque.')
             return 0
         elif atkJ == 6:
-            print(f'{YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 24 de dano]]\n[[Recuperou 12 de vida]]{RESET}')
+            print(f'{cfg.Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 24 de dano]]\n[[Recuperou 12 de vida]]{cfg.Cores.RESET}')
             self.vida += 8
             return 24
         else:
@@ -46,7 +46,7 @@ class Asssassino(Jogador):
             self.vida -= 4
             return 0
         elif atkJ == 6:
-            print(f'{YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 56 de dano]]{RESET}')
+            print(f'{cfg.Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n[[Causou 56 de dano]]{cfg.Cores.RESET}')
             return 56
         else:
             print(f'\nVocê acerta seu golpe na criatura!\n[[Causou 28 de dano]]\n[[Perdeu 4 de vida]]')
@@ -67,7 +67,7 @@ class Asssassino(Jogador):
         elif atkJ == 6:
             dano = 12
             cura = 4
-            print(f'{YELLOW}\nVocê acerta um golpe crítico em todos os inimigos!!!\n[[Causou {dano} de dano a todos]]\n[[Recuperou {cura} de vida]]{RESET}')
+            print(f'{cfg.Cores.YELLOW}\nVocê acerta um golpe crítico em todos os inimigos!!!\n[[Causou {dano} de dano a todos]]\n[[Recuperou {cura} de vida]]{cfg.Cores.RESET}')
         else:
             dano = 6
             cura = 2

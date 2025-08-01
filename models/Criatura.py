@@ -6,12 +6,7 @@ import random
 import time
 
 if TYPE_CHECKING:
-    from .batalha import Batalha
-
-
-#Consts
-YELLOW = '\033[93m'
-RESET = '\033[0m'
+    from .Gerenciadores.batalha import Batalha
 
 
 #classses
