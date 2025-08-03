@@ -86,6 +86,8 @@ class Batalha:
         while len(self.jogadores) > 0 and len(self.inimigos) > 0:
             for lista_criaturas in self.criaturas.values():
                 for criatura in lista_criaturas:
+                    print(self.criaturas)
+                    print(criatura)
                 
                     self.mostrar_stats_globais()
                     criatura.turno()

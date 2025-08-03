@@ -3,7 +3,7 @@
 from models.Gerenciadores.batalha import Batalha
 from .jogador import Jogador
 from typing import Callable
-from configs import ASSASSINO, Dados, Cores, Combate
+from configs import ASSASSINO, Cores, Combate
 
 
 #classes
@@ -23,7 +23,7 @@ class Assassino(Jogador):
     def atacar(self) -> int:
         print(f'\nVocê se move rapidamente com sua adaga, vai pra cima da criatura, e...')
         self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkJ = self.rolar_dados(Dados.D6, 1)
+        atkJ = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
         
         if atkJ == Combate.FALHA:
             print('\nInfelizmente você erra o ataque.')
@@ -45,7 +45,7 @@ class Assassino(Jogador):
     def ataque_especial(self) -> int:
         print('\nVocê ergue sua adaga, faz um corte em sua mão para que ela se alimente de seu sangue, e avança enquanto sua arma brilha em vermelho...')
         self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkJ = self.rolar_dados(Dados.D6, 1)
+        atkJ = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
         
         if atkJ == Combate.FALHA:
             print('\nInfelizmente você erra o ataque.\n[[Perdeu 4 de vida]]')
@@ -69,7 +69,7 @@ class Assassino(Jogador):
         dano: int = Combate.DANO_FALHA
         print('\nVocê avança com sua adaga, fazendo movimentos rápidos e mirando em todos em sua frente...')
         self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkJ = self.rolar_dados(Dados.D6, 1)
+        atkJ = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
         
         if atkJ == Combate.FALHA:
             print('\nInfelizmente você erra o ataque.')

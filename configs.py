@@ -1,9 +1,9 @@
 #Lib com as constantes e configurações do projeto
 #Libs
-
+from configsCriaturas import CriaturaCFG
 
 #Classes
-    
+#Globais
 class Cores:
     """Subbiblioteca com as cores"""
     YELLOW = '\033[93m'
@@ -45,32 +45,33 @@ class Combate:
     DELAY_LONGO: int = 5
 
 
-
-
-class PALADINO:
+#Jogadores
+class PALADINO():
     """Configurações básicas paladino"""
-    NOME: str = 'Paladino'
-    VIDA: int = 80
-    MANA: int = 0
-    MULTIPLICADOR_CRITICO: int = Combate.MULTIPLICADOR_CRITICO_PADRAO
+    CFG_STATUS: CriaturaCFG = CriaturaCFG()
+    CFG_STATUS.NOME = 'paladino'
+    CFG_STATUS.VIDA = 80
+    CFG_STATUS.MANA = 0
+    CFG_STATUS.MULTIPLICADOR_CRITICO = 2
+
 
     ID_ATAQUE_BASICO: int = 1
     DANO_ATAQUE_BASICO: int = 10
     RESTAURACAO_MANA_CRITICO: int = 1
 
-    ID_BOLA_FOGO: int = 2
-    DANO_BOLA_FOGO: int = 5
 
     ID_ATAQUE_ESPECIAL: int = 3
     DANO_ATAQUE_ESPECIAL: int = 25
     CUSTO_ATAQUE_ESPECIAL: int = 5
+    
 
     ID_RECUPERAR_FOLEGO: int = 1
     TIPO_DADO_RECUPERAR_FOLEGO: int = Dados.D10
     QUANTIDADE_DADOS_RECUPERAR_FOLEGO: int = 2
     RESTAURACAO_MANA_RECUPERAR_FOLEGO: int = 1
 
-class ASSASSINO: 
+
+class ASSASSINO(): 
     """Configurações da classe de Assassino"""
 
     NOME: str = 'Assassino'
@@ -82,7 +83,7 @@ class ASSASSINO:
     ID_ATAQUE_BASICO: int = 1
     DANO_ATAQUE_BASICO: int = 12
     CURA_ATAQUE_BASICO: int = 4
-    
+    ATAQUE_BASICO_EFEITO: str = 'cura'
     ID_ATAQUE_AREA: int = 2
     DANO_ATAQUE_AREA: int = 6
     CURA_ATAQUE_AREA: int = 2
@@ -92,7 +93,34 @@ class ASSASSINO:
     CUSTO_ATAQUE_ESPECIAL: int = 4
     
 
-class ESQUELETO:
+class CLERIGO():
+    """Configurações básicas do clérigo"""
+
+    #Status Base
+    NOME: str = 'Clérigo'
+    VIDA: int = 100
+    MANA_MAXIMA: int = 10
+    MANA_INICIAL: int = 5
+    MULTIPLICADOR_CRITICO: int = Combate.MULTIPLICADOR_CRITICO_PADRAO
+    RESTAURACAO_MANA_CRITICO: int = 1
+
+    #Bola de Fogo
+    ID_BOLA_FOGO: int = 1
+    DANO_BOLA_FOGO: int = 5
+    EFEITO_BOLA_FOGO: str = 'queimadura'
+    CUSTO_BOLA_FOGO: int = 1
+
+    #Meditação
+    ID_MEDITACAO: int = 1
+    RECUPERACAO_MANA_MEDITACAO: int = 3
+
+    #Magia Cura
+    ID_MAGIA_CURA: int = 2
+    CURA_MAGIA_CURA: int = 5
+
+
+#Inimigos
+class ESQUELETO():
     """Configurações da classe Esqueleto."""
 
     NOME: str = 'esqueleto'
@@ -104,7 +132,7 @@ class ESQUELETO:
     DANO_ATAQUE_BASICO: int = 4
 
 
-class LICH:
+class LICH():
     """Configuroções da classe de Lich."""
 
     NOME: str = 'Lich'
@@ -117,7 +145,6 @@ class LICH:
 
     ID_INVOCAR_ESQUELETO: int = 2
     QUANTIDADE_ESQUELETOS_INVOCADOS: int = 1
-
 
 
 class Menus:

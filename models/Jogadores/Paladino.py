@@ -1,6 +1,6 @@
 # Classe Paladino
 #Libs
-from configs import PALADINO, Combate, Dados, Cores
+from configs import PALADINO, Combate,  Cores
 from .jogador import Jogador
 from typing import Union, Callable
 
@@ -17,7 +17,6 @@ class Paladino(Jogador):
         #Esse distinção de ações é importante por conta que umas precisam de alvo e outras não.
         self.acoes_ataque: dict[int, Callable[[], int]] = {
             PALADINO.ID_ATAQUE_BASICO: self.atacar,
-            PALADINO.ID_BOLA_FOGO: self.bola_de_fogo,
             PALADINO.ID_ATAQUE_ESPECIAL: self.ataque_especial
         }
 
@@ -33,7 +32,7 @@ class Paladino(Jogador):
         print('\nVocê segura sua espada com força, e vai pra cima do alvo, e...')
         
         self.contagem_regressiva(Combate.DELAY_MEDIO)
-        rolagem = self.rolar_dados(Dados.D6, 1)
+        rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
         
         if rolagem == Combate.FALHA:
             print('\nInfelizmente você erra o ataque.')
@@ -68,7 +67,7 @@ class Paladino(Jogador):
         
         self.contagem_regressiva(Combate.DELAY_MEDIO)
         self.mana -= PALADINO.CUSTO_ATAQUE_ESPECIAL
-        atkJ = self.rolar_dados(Dados.D6, 1)
+        atkJ = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
         
         if atkJ == Combate.FALHA:
             print('\nInfelizmente você erra o ataque.')
@@ -83,47 +82,10 @@ class Paladino(Jogador):
             return PALADINO.DANO_ATAQUE_ESPECIAL
 
 
-    def bola_de_fogo(self) -> int:
-        """Ataque em área do paladino em combate."""
-        N_PRA_NAO_DAR_ERRO = 0
-        if self.batalha == None:
-            return N_PRA_NAO_DAR_ERRO
-        
-        print('\nVocê junta a suas mãos e começa a canalizar, uma energia magica começa a surgir e...')
-        self.contagem_regressiva(Combate.DELAY_MEDIO)
-        rolagem = self.rolar_dados(Dados.D6, 1)
-        
-        if rolagem == Combate.FALHA:
-            print('\nA magia se desfaz no ar.')
-            return N_PRA_NAO_DAR_ERRO
-        
-        elif rolagem == Combate.CRITICO:
-
-            dano = PALADINO.DANO_BOLA_FOGO * PALADINO.MULTIPLICADOR_CRITICO
-
-            print(f'{Cores.YELLOW}\nVocê acerta ela numa explosão enorme!!!\n[[Causou {dano} de dano em todos os alvos]]\n[[Recuperou {PALADINO.RESTAURACAO_MANA_CRITICO} de mana]]{Cores.RESET}')
-            
-            self.mana += PALADINO.RESTAURACAO_MANA_CRITICO
-            
-            for inimigo in self.batalha.inimigos:
-                inimigo.vida -= dano
-            return N_PRA_NAO_DAR_ERRO
-        
-        else:
-            dano = PALADINO.DANO_BOLA_FOGO
-
-            print(f'\nVocê acerta seu golpe e todos os inimigos sofrem queimaduras!\n[[Causou {dano} de dano em todos os alvos]]')
-
-            for inimigo in self.batalha.inimigos:
-                inimigo.vida -= dano
-            return N_PRA_NAO_DAR_ERRO
-
-
     #Menus
     def menu_ataque(self) -> None:
         """Cria um menu para a escolha de ações de ataque."""
         print(f"{PALADINO.ID_ATAQUE_BASICO}- Atacar (dano em 1 alvo)")
-        print(f"{PALADINO.ID_BOLA_FOGO} - Bola de fogo (dano em área)")
         if self.mana >= PALADINO.CUSTO_ATAQUE_ESPECIAL:
             print(f'{PALADINO.ID_ATAQUE_ESPECIAL} - ATAQUE ESPECIAL disponível! (25 de dano normal/50 de dano crítico)')
         self.gerenciar_menu_ataque()
@@ -136,13 +98,6 @@ class Paladino(Jogador):
 
 
     #Outros metodos
-    def mostrar_stats(self) -> None:
-        """Mostra os status do paladino"""
-        print('\nVida do Paladino: {}'.format(self.vida))
-        print('Mana do Paladino: {}'.format(self.mana))
-        print()
-
-    
     def turno(self) -> Union[int, None]:
         """Gerencia o turno do paladino em combate."""
         self.menu_acoes()

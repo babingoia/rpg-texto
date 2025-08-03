@@ -20,14 +20,17 @@ class Criatura:
         """
         self.vida = 0
         self.nome = None
+        self.mana: int = 0
         self.batalha: Union[Batalha, None] = batalha
         self.acoes_ataque: dict[int, Callable[[], int]] = {}
         self.acoes_buff: dict[int, Callable[[], None]] = {}
 
 
     def mostrar_stats(self) -> None:
-        """Mostra todos os status da criatura. Precisa ser implementado individualmente em subclasses."""
-        raise NotImplementedError
+        """Mostra os status da criatura."""
+        print(f'\nVida do {self.nome}: {self.vida}')
+        print(f'Mana do {self.nome}: {self.mana}')
+
 
 
     def contagem_regressiva(self, segundos: int) -> None:

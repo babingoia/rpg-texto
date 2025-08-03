@@ -28,7 +28,7 @@ class Esqueleto(Criatura):
         """Lógica para um ataque básico de espada."""
         print('\nO esqueleto corre em sua direção com a espada levantada...')
         self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkL = self.rolar_dados(Dados.D6, 1)
+        atkL = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
         dano = ESQUELETO.DANO_ATAQUE_BASICO
         
         if atkL == Combate.FALHA:
@@ -86,7 +86,7 @@ class Lich(Esqueleto):
 
         print('\nO Lich toca na terra, fazendo-a tremer...')
         self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkL = self.rolar_dados(Dados.D6, 1)
+        atkL = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
         
         if atkL == Combate.FALHA:
             print('\nNada acontece')
@@ -105,12 +105,15 @@ class Lich(Esqueleto):
                 self.batalha.inimigos.append(esqueleto)
 
                 n_esqueletos -= 1
+                print(esqueleto.batalha, esqueleto.batalha.inimigos)
         
         else:
             print(f'\n {n_esqueletos} esqueleto surge da terra.')
             esqueleto = Esqueleto()
             esqueleto.batalha = self.batalha
+            print(esqueleto.batalha)
             self.batalha.inimigos.append(esqueleto)
+            print(esqueleto.batalha.inimigos)
 
 
     def atacar(self) -> int:
@@ -118,7 +121,7 @@ class Lich(Esqueleto):
 
         print('\nO Lich levanta suas mãos, invocando um raio necromante...')
         self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkL = self.rolar_dados(Dados.D6, 1)
+        atkL = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
         dano = LICH. DANO_ATAQUE_BASICO
 
         if atkL == Combate.FALHA:

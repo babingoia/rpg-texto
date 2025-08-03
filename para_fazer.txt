@@ -1,1 +1,8 @@
--> Substituir os números mágicos pelas configs da lib de config.
+-> Tentar fazer um sistema de seleção de alvo melhor pros dois menus.
+
+-> Tentar fazer o dano ser computado dentro de batalha.
+    *Flag pra mostrar se o dano é em área ou não.
+    *Retornar dano e alvo.
+    *Retornar None se não tiver dano.
+
+-> Solução mágica: Command pattern pros ataques, resolve 100% dos problemas.

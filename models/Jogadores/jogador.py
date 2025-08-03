@@ -9,15 +9,30 @@ class Jogador(Criatura):
     """Classe base que possui lógicas genéricas para jogadores."""
     def __init__(self, batalha: Batalha | None = None) -> None:
         super().__init__(batalha)
+
+
+    def mostrar_stats(self) -> None:
+        """Mostra os status do paladino"""
+        print(f'\nVida do{self.nome}: {self.vida}')
+        print(f'Mana do {self.nome}: {self.mana}')
+        print()
+
+
     
     def menu_buffs(self) -> None:
-        """Mostra as opções de buff daquela classe. Precisa ser implementado na classe específica."""
-        raise NotImplementedError
+        """Mostra as opções de buff daquela classe."""
+        print("Selecione uma ação de ataque:")
+        for id, item in self.acoes_buff.items():
+            print(f"{id} - {item.__name__}")
+        self.gerenciar_menu_buffs()
 
 
     def menu_ataque(self) -> None:
-        """Mostra as opções de ataque daquela classe. Precisa ser implementado na classe específica."""
-        raise NotImplementedError
+        """Mostra as opções de ataque daquela classe."""
+        print("Selecione uma ação de ataque:")
+        for id, item in self.acoes_ataque.items():
+            print(f"{id} - {item.__name__}")
+        self.gerenciar_menu_ataque()
 
 
     def menu_acoes(self) -> None:
@@ -108,3 +123,7 @@ class Jogador(Criatura):
 
             self.acoes_buff[escolha]()
             return
+
+
+    def escolher_alvo(self):
+        pass
