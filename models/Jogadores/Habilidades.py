@@ -13,36 +13,6 @@ class Command:
         self.alvos = alvos
         self.configuracoes = configuracoes
 
-
-    def contagem_regressiva(self, segundos: int) -> None:
-        """Inicia uma contagem regressiva.
-        
-        Args:
-            segundos: quantidade de segundos que a contagem vai demorar.
-        """
-        for i in range(segundos, 0, -1):
-            print(f"{i}...", end=' ', flush=True)
-            time.sleep(1)
-        print('\n')
-
-    
-    def rolar_dados(self, dado: int, n_dados: int, valor: int = 0) -> int:
-        """Rola um dado de x lados x vezes.
-        
-        Args:
-            dado: Quantidade de lados do dado a ser rolado.
-            n_dados: Quantidade de dados a serem rolados.
-            valor: É o número inicial sem nenhuma rolagem de dados, pode ser usado para atribuir um bônus inicial. Valor padrão 0.
-        """
-        valor += random.randint(1,dado)
-        
-        n_dados -= 1
-        
-        if n_dados > 0:
-            return self.rolar_dados(dado, n_dados, valor) #Loop recursivo.
-
-        return valor    
-
     
     def executar (self) -> int:
         raise NotImplementedError

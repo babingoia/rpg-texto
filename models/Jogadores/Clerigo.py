@@ -2,7 +2,7 @@
 #libs
 from .jogador import Jogador
 from models.Gerenciadores.batalha import Batalha
-from configs import CLERIGO, Combate, Cores
+from ..Configs.configs import CLERIGO, Combate, Cores
 
 
 #Classes

@@ -1,22 +1,23 @@
 #Lógica para funcionamento do Lich
 #Libs
-from ..Criatura import Criatura
-from ..Jogadores.jogador import Jogador
+from ..Jogadores.jogador import IA
 from typing import Union, Callable
-from configs import Dados, LICH, ESQUELETO, Combate
-
+from ..Configs.configs import Dados, LICH, ESQUELETO, Combate
+from ..Ataques.Commands import Command, CommandAtaqueBasico
+from ..Gerenciadores.batalha import Batalha
 
 #Classes
-class Esqueleto(Criatura):
+class Esqueleto(IA):
     """Classe específica para criar um esqueleto."""
-    def __init__(self) -> None:
+    def __init__(self, batalha: Union[Batalha, None] = None) -> None:
         """Cria uma instância de esqueleto com as características básicas."""
         super().__init__()
-        self.nome = ESQUELETO.NOME
-        self.vida = ESQUELETO.VIDA
-        self.acoes: dict[int, Callable[[], Union[int, None]]] = {
-            ESQUELETO.ID_ATAQUE_BASICO: self.atacar
+        self.nome = ESQUELETO.STATUS.NOME
+        self.vida = ESQUELETO.STATUS.VIDA
+        self.acoes: dict[int, Callable[[], Union[int, list[Command]]]] = {
+            ESQUELETO.ATAQUE_BASICO.ID: self.atacar
         }
+        self.batalha = batalha
 
     def mostrar_stats(self):
         """Mostra os status do esqueleto."""
@@ -24,41 +25,20 @@ class Esqueleto(Criatura):
         print()
 
 
-    def atacar(self) -> int:
+    def atacar(self) -> list[Command]:
         """Lógica para um ataque básico de espada."""
-        print('\nO esqueleto corre em sua direção com a espada levantada...')
-        self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkL = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
-        dano = ESQUELETO.DANO_ATAQUE_BASICO
-        
-        if atkL == Combate.FALHA:
-            print('\nVocê consegue desviar do ataque a tempo!')
-            dano = Combate.DANO_FALHA
-            return dano
-        
-        elif atkL == Combate.CRITICO:
-            dano *= ESQUELETO.MULTIPLICADOR_CRITICO
-            print('\nELE TE ACERTA EM CHEIO!!!\n[[Causou {dano} de dano]]')
-            return dano
-        
-        else:
-            print('\nEle te corta.\n[[Causou {} de dano]]')
-            return dano
+        alvo = self.escolher_alvo()
+        rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
+
+        comandos: list[Command] = [CommandAtaqueBasico(ESQUELETO.ATAQUE_BASICO, alvo, rolagem)]
+        return comandos
 
 
-    def turno(self) -> Union[int, None]:
+    def turno(self) -> list[Command]:
         """Lógica do turno de um esqueleto comum."""
-        if self.batalha == None:
-            return
-        alvo = next((i for i,a in enumerate(self.batalha.jogadores) if isinstance(a, Jogador)), None)
-        if alvo == None:
-            return
-        
-        valor = self.atacar()
-        if valor != None: # type: ignore
-            self.batalha.jogadores[alvo].vida -= valor
-        
-        return alvo
+        comandos = self.atacar()
+        return comandos
+
 
 
 class Lich(Esqueleto):
@@ -66,8 +46,10 @@ class Lich(Esqueleto):
     def __init__(self) -> None:
         """Inicia características próprias, o resto é a da classe base Esqueleto."""
         super().__init__()
-        self.nome = LICH.NOME
-        self.vida = LICH.VIDA
+        self.cfg = LICH
+        self.nome = self.cfg.STATUS.NOME
+        self.vida = self.cfg.STATUS.VIDA
+        
 
     def mostrar_stats(self):
         """Mostra os status do Lich."""
@@ -116,53 +98,24 @@ class Lich(Esqueleto):
             print(esqueleto.batalha.inimigos)
 
 
-    def atacar(self) -> int:
-        """Lógica para um ataque básico do Lich."""
-
-        print('\nO Lich levanta suas mãos, invocando um raio necromante...')
-        self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkL = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
-        dano = LICH. DANO_ATAQUE_BASICO
-
-        if atkL == Combate.FALHA:
-            dano = Combate.DANO_FALHA
-            print('\nVocê consegue desviar da magia a tempo!')
-            return dano
-        
-        elif atkL == Combate.CRITICO:
-            dano *= LICH.MULTIPLICADOR_CRITICO
-            print(f'\nELE TE ACERTA EM CHEIO!!!\n[[Causou {dano} de dano]]')
-            return dano
-        
-        else:
-            print(f'\nEle acerta o raio em você.\n[[Causou {dano} de dano]]')
-            return dano
-
-
-    def escolher_acao(self) -> Union[int, None]:
+    def escolher_acao(self) -> list[Command]:
         """Função que escolhe aleatóriamente qual será a ação do lich em batalha."""
         escolha = self.rolar_dados(Dados.D2,1)
-
+        comandos: list[Command] = []
         match escolha:
-            case LICH.ID_INVOCAR_ESQUELETO:
-                self.invocar_esqueleto()
-            case LICH.ID_ATAQUE_BASICO:
-                valor = self.atacar()
-                return valor
+            case LICH.ID_INVOCAR_ESQU:
+                comandos = self.invocar_esqueleto()
+            case LICH.ATAQUE_BASICO.ID:
+                comandos = self.atacar()
             case _:
                 pass
 
+        return comandos
 
-    def turno(self) -> Union[int, None]:
+
+    def turno(self) -> list[Command]:
         """Lógica de um turno do Lich em combate."""
-        if self.batalha == None:
-            return
-        alvo = next((i for i,a in enumerate(self.batalha.jogadores) if isinstance(a, Jogador)), None)
-        if alvo == None:
-            return
         
-        valor = self.escolher_acao()
-        if valor != None: # type: ignore
-            self.batalha.jogadores[alvo].vida -= valor
+        comandos = self.atacar()
         
-        return alvo
+        return comandos

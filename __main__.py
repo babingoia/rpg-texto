@@ -28,12 +28,10 @@ def main():
             return
         
     lich = Lich()
-    jogador = Assassino()
-    jogador2 = Paladino()
+    jogador = Paladino()
 
     inimigos.append(lich)
     jogadores.append(jogador)
-    jogadores.append(jogador2)
 
     batalha = Batalha(inimigos, jogadores)
 

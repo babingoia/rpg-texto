@@ -3,7 +3,7 @@
 from models.Gerenciadores.batalha import Batalha
 from .jogador import Jogador
 from typing import Callable
-from configs import ASSASSINO, Cores, Combate
+from ..Configs.configs import ASSASSINO, Cores, Combate
 
 
 #classes

@@ -3,6 +3,7 @@
 from __future__ import annotations
 from os import system, name
 from typing import TYPE_CHECKING, Union
+from ..Ataques.Commands import Command
 
 if TYPE_CHECKING:
     from ..Criatura import Criatura
@@ -86,11 +87,13 @@ class Batalha:
         while len(self.jogadores) > 0 and len(self.inimigos) > 0:
             for lista_criaturas in self.criaturas.values():
                 for criatura in lista_criaturas:
-                    print(self.criaturas)
-                    print(criatura)
-                
+                    
                     self.mostrar_stats_globais()
-                    criatura.turno()
+                    comandos: list[Command] = criatura.turno()
+                    
+                    for comando in comandos:
+                        comando.executar()
+                    
                     self.checar_morte()
 
                     input("Aperte ENTER para continuar...")
