@@ -1,6 +1,9 @@
 #Configurações abstratas das criaturas.
 #Libs
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from models import Criatura
 
 #Classes Basicas
 class MensagensRolagem:
@@ -37,3 +40,12 @@ class ConfiguracaoBasicaAtaque:
         self.TIPO_CUSTO: str
         self.MULTIPLICADOR_CRITICO: int
         self.MENSAGENS: MensagensRolagem = MensagensRolagem()
+
+
+class ConfiguracaoInvocacao:
+    def __init__(self) -> None:
+        self.ID: int
+        self.CRIATURA: Criatura
+        self.QUANTIDADE_INVOCACOES: int
+        self.QUANTIDADE_INVOCACOES_CRITICO: int
+        self.MENSAGENS = MensagensRolagem()

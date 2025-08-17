@@ -1,0 +1,1 @@
+from .ataques import Command, CommandAtaqueBasico, CommandInvocarCriatura

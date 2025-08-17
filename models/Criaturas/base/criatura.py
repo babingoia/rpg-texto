@@ -4,13 +4,11 @@ from __future__ import annotations
 from typing import Union, TYPE_CHECKING, Callable
 import random
 import time
-from .Configs.configs import Combate, ConfiguracaoBasicaAtaque
-from .Ataques.Commands import Command, CommandAtaqueBasico
+from commands import Command, CommandAtaqueBasico
+from configuracoes import ConfiguracaoBasicaAtaque, Combate
 
-from models.Gerenciadores.batalha import Batalha
-from .Ataques.Commands import Command
 if TYPE_CHECKING:
-    from Gerenciadores.batalha import Batalha
+    from gerenciadores import Batalha
 
 
 #classses
@@ -27,7 +25,7 @@ class Criatura:
         self.nome = None
         self.batalha: Union[Batalha, None] = batalha
         self.acoes_ataque: dict[int, Callable[[], list[Command]]] = {}
-        self.acoes_buff: dict[int, Callable[[], None]] = {}
+        self.acoes_buff: dict[int, Callable[[], list[Command]]] = {}
 
 
 

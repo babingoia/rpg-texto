@@ -1,9 +1,9 @@
 # Classe Paladino
 #Libs
-from ..Configs.configs import PALADINO, Combate,  Cores
-from .jogador import Jogador
-from typing import Union, Callable
-from ..Ataques.Commands import Command, CommandAtaqueBasico
+from configuracoes import PALADINO, Combate,  Cores
+from ..base import Jogador
+from typing import Callable
+from commands import Command, CommandAtaqueBasico
 
 
 class Paladino(Jogador):

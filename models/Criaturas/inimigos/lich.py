@@ -1,10 +1,11 @@
 #Lógica para funcionamento do Lich
 #Libs
-from ..Jogadores.jogador import IA
+from ..base import IA
 from typing import Union, Callable
-from ..Configs.configs import Dados, LICH, ESQUELETO, Combate
-from ..Ataques.Commands import Command, CommandAtaqueBasico
-from ..Gerenciadores.batalha import Batalha
+from configuracoes import Dados, LICH, ESQUELETO, Combate
+from gerenciadores import Batalha
+from commands import Command, CommandAtaqueBasico, CommandInvocarCriatura
+
 
 #Classes
 class Esqueleto(IA):
@@ -58,52 +59,34 @@ class Lich(Esqueleto):
 
 
     #Ações
-    def invocar_esqueleto(self) -> Union[int, None]:
+    def invocar_esqueleto(self) -> list[Command]:
         """Invoca um esqueleto e o adiciona a instância da batalha atual."""
         
         if self.batalha == None:
-            return
+            raise ValueError("Ops, não está em batalha!")
         
-        n_esqueletos = LICH.QUANTIDADE_ESQUELETOS_INVOCADOS
+        rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
+        print(id(self.batalha.inimigos))
+        comandos: list[Command] = [CommandInvocarCriatura('esqueleto', self.batalha.inimigos, rolagem, LICH.INVOCAR_ESQUELETO)]
 
-        print('\nO Lich toca na terra, fazendo-a tremer...')
-        self.contagem_regressiva(Combate.DELAY_MEDIO)
-        atkL = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
-        
-        if atkL == Combate.FALHA:
-            print('\nNada acontece')
-        
-        elif atkL == Combate.CRITICO:
+        return comandos
+    
 
-            n_esqueletos *= LICH.MULTIPLICADOR_CRITICO
+    def atacar(self) -> list[Command]:
+        """Lógica para um ataque básico de espada."""
+        alvo = self.escolher_alvo()
+        rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
 
-            print(f'\n {n_esqueletos} esqueletos surgem da terra!')
-
-            while n_esqueletos != 0:
-                esqueleto = Esqueleto()
-                
-                esqueleto.batalha = self.batalha
-                
-                self.batalha.inimigos.append(esqueleto)
-
-                n_esqueletos -= 1
-                print(esqueleto.batalha, esqueleto.batalha.inimigos)
-        
-        else:
-            print(f'\n {n_esqueletos} esqueleto surge da terra.')
-            esqueleto = Esqueleto()
-            esqueleto.batalha = self.batalha
-            print(esqueleto.batalha)
-            self.batalha.inimigos.append(esqueleto)
-            print(esqueleto.batalha.inimigos)
-
+        comandos: list[Command] = [CommandAtaqueBasico(LICH.ATAQUE_BASICO, alvo, rolagem)]
+        return comandos
+    
 
     def escolher_acao(self) -> list[Command]:
         """Função que escolhe aleatóriamente qual será a ação do lich em batalha."""
         escolha = self.rolar_dados(Dados.D2,1)
         comandos: list[Command] = []
         match escolha:
-            case LICH.ID_INVOCAR_ESQU:
+            case LICH.INVOCAR_ESQUELETO.ID:
                 comandos = self.invocar_esqueleto()
             case LICH.ATAQUE_BASICO.ID:
                 comandos = self.atacar()
@@ -115,7 +98,10 @@ class Lich(Esqueleto):
 
     def turno(self) -> list[Command]:
         """Lógica de um turno do Lich em combate."""
+        if self.batalha == None:
+            raise ValueError("Ops, não está em batalha!")
         
-        comandos = self.atacar()
+        print("Batalha (Lich):", id(self.batalha))
+        comandos = self.invocar_esqueleto()
         
         return comandos

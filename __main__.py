@@ -1,12 +1,7 @@
 #Inicia o programa
 # Libs
-from models.Criatura import Criatura
-from models.Jogadores.Paladino import Paladino
-from models.Jogadores.Assassino import Assassino
-from models.Jogadores.Clerigo import Clerigo
-from models.Inimigos.Lich import Lich
-from models.Gerenciadores.batalha import Batalha
-from models.Jogadores.jogador import Jogador
+from models import Criatura, Lich, Jogador, Paladino
+from gerenciadores import Batalha
 
 
 #Variaveis globais

@@ -1,0 +1,1 @@
+from .Criaturas import Lich, Esqueleto, Clerigo, Paladino, Assassino, Criatura, Jogador, IA

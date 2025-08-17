@@ -1,9 +1,9 @@
 #Classe para o assassino
 #Libs
-from models.Gerenciadores.batalha import Batalha
-from .jogador import Jogador
+from gerenciadores import Batalha
+from ..base import Jogador
 from typing import Callable
-from ..Configs.configs import ASSASSINO, Cores, Combate
+from configuracoes import ASSASSINO, Cores, Combate
 
 
 #classes

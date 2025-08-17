@@ -1,9 +1,8 @@
 #Classe base para um jogador.
-from models.Gerenciadores.batalha import Batalha
-#from typing import TYPE_CHECKING
-from ..Configs.configs import Menus
-from ..Criatura import Criatura
-from ..Ataques.Commands import Command
+from gerenciadores import Batalha
+from configuracoes import Menus
+from commands import Command
+from .criatura import Criatura
 
 
 class Jogador(Criatura):

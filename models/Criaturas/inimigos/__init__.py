@@ -1,0 +1,1 @@
+from .lich import Lich, Esqueleto

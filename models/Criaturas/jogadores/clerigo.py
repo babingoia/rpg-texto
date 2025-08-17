@@ -1,8 +1,8 @@
 #Classe do clérigo
 #libs
-from .jogador import Jogador
-from models.Gerenciadores.batalha import Batalha
-from ..Configs.configs import CLERIGO, Combate, Cores
+from ..base import Jogador
+from gerenciadores import Batalha
+from configuracoes import CLERIGO, Combate, Cores
 
 
 #Classes

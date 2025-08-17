@@ -3,11 +3,10 @@
 from __future__ import annotations
 from os import system, name
 from typing import TYPE_CHECKING, Union
-from ..Ataques.Commands import Command
+from commands import Command
 
 if TYPE_CHECKING:
-    from ..Criatura import Criatura
-    from ..Jogadores.jogador import Jogador
+    from models import Jogador, Criatura  
 
 #Classes
 class Batalha:
@@ -27,6 +26,7 @@ class Batalha:
         }
         self.jogadores = self.criaturas["jogadores"]
         self.inimigos = self.criaturas["inimigos"]
+        print(id(self.inimigos))
 
     def mostrar_stats_globais(self) -> None:
         """Mostra os status de todas as criaturas envolvidas na batalha."""
@@ -68,9 +68,15 @@ class Batalha:
             else:
                 print(f"{jogador.nome} foi destruido!")
 
-        self.inimigos = list(inimigos_vivos)
-        self.jogadores = list(jogadores_vivos)
+        self.criaturas['inimigos'] = list(inimigos_vivos)
+        self.criaturas['jogadores'] = list(jogadores_vivos)
 
+
+    def colocar_em_batalha(self) -> None:
+        #Adiciona essa instancia de batalha a todas as criaturas envolvidas
+        for lista_criaturas in self.criaturas.values():
+            for criatura in lista_criaturas:
+                criatura.batalha = self
 
     def iniciar(self) -> Union[list[Criatura], list[Jogador]]:
         """Inicia o loop de Batalha
@@ -78,13 +84,11 @@ class Batalha:
         Returns:
             Criatura: Retorna quem venceu a batalha.
         """
-        #Adiciona essa instancia de batalha a todas as criaturas envolvidas
-        for lista_criaturas in self.criaturas.values():
-            for criatura in lista_criaturas:
-                criatura.batalha = self
+        
 
         #Começa o loop de batalha
         while len(self.jogadores) > 0 and len(self.inimigos) > 0:
+            self.colocar_em_batalha()
             for lista_criaturas in self.criaturas.values():
                 for criatura in lista_criaturas:
                     
