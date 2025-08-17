@@ -1,11 +1,7 @@
 #Inicia o programa
 # Libs
-from models.Criatura import Criatura
-from models.Jogadores.Paladino import Paladino
-from models.Jogadores.Assassino import Assassino
-from models.Inimigos.Lich import Lich
-from models.Gerenciadores.batalha import Batalha
-from models.Jogadores.jogador import Jogador
+from models import Criatura, Lich, Jogador, Paladino
+from gerenciadores import Batalha
 
 
 #Variaveis globais
@@ -27,12 +23,10 @@ def main():
             return
         
     lich = Lich()
-    jogador = Assassino()
-    jogador2 = Paladino()
+    jogador = Paladino()
 
     inimigos.append(lich)
     jogadores.append(jogador)
-    jogadores.append(jogador2)
 
     batalha = Batalha(inimigos, jogadores)
 

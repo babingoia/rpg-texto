@@ -1,1 +1,26 @@
--> Substituir os números mágicos pelas configs da lib de config.
+-> Tentar fazer um sistema de seleção de alvo melhor pros dois menus.
+
+-> Tentar fazer o dano ser computado dentro de batalha.
+    *Flag pra mostrar se o dano é em área ou não.
+    *Retornar dano e alvo.
+    *Retornar None se não tiver dano.
+
+-> Solução mágica: Command pattern pros ataques, resolve 100% dos problemas.
+
+-> Modularizar configurações
+-> Ajustar as classes para usarem das configurações
+
+-> Criar biblioteca de ataques com commands.
+-> Criar configs genéricas com base na biblioteca de commands.
+-> Criar configs especificas com base nas configs genéricas.
+-> No método de ataque das subclasses de criarturas, adicionar a lógica de escolha dos commands
+e colocar para que elas retornem uma lista de commands.
+-> Retornar essa lista de commands pra batalha.
+-> Batalha executa os commands.
+
+ATUALIZAÇÕES 16/08
+-> Fluxo de commands funcionando perfeitamente
+-> Configurações modularizadas o máximo que dava.
+
+-> Criar agora os commands dos outros ataques.
+-> Ajustar as configurações que faltam.
