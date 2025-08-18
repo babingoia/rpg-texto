@@ -1,8 +1,8 @@
 #Classe base para um jogador.
 from gerenciadores import Batalha
-from configuracoes import Menus
 from commands import Command
 from .criatura import Criatura
+from typing import Callable
 
 
 class Jogador(Criatura):
@@ -17,59 +17,17 @@ class Jogador(Criatura):
         print(f'Mana do {self.nome}: {self.mana}')
         print()
 
- 
-    def menu_buffs(self) -> None:
-        """Mostra as opções de buff daquela classe."""
-        print("Selecione uma ação de ataque:")
-        for id, item in self.acoes_buff.items():
-            print(f"{id} - {item.__name__}")
-        self.gerenciar_menu_buffs()
 
-
-    def menu_ataque(self) -> list[Command]:
+    def menu_acoes(self, lista_acoes: dict[int, Callable[[], list[Command]]]) -> list[Command]:
         """Mostra as opções de ataque daquela classe."""
-        print("Selecione uma ação de ataque:")
-        for id, item in self.acoes_ataque.items():
+        print("Selecione uma ação:")
+        for id, item in lista_acoes.items():
             print(f"{id} - {item.__name__}")
-        comandos = self.gerenciar_menu_ataque()
+        comandos = self.gerenciar_menu(lista_acoes)
         return comandos
-
-
-    def menu_acoes(self) -> list[Command]:
-        """Cria um menu básico para o jogador escolher entre as ações que deseja executar."""
-
-        print(f'\nAgora é sua vez {self.nome}, o que deseja fazer?')
-        print('1- Atacar')
-        print('2- Se buffar')
-
-        while True:
-            escolha = input()
-
-            if not escolha.isdigit():
-                print("Escolha inválida, por favor tente novamente.")
-                continue
-
-            escolha = int(escolha)
-
-            """
-            match escolha:
-                case Menus.MENU_ATAQUE:
-                    comandos = self.menu_ataque()
-                case Menus.MENU_BUFFS:
-                   self.menu_buffs()
-                case _:
-                    print("Escolha fora dos limites, por favor tente novamente.")
-                    continue
-                """
-            if escolha == Menus.MENU_ATAQUE:
-                comandos = self.menu_ataque()
-            else:
-                print("Escolha fora dos limites, por favor tente novamente.")
-                continue
-            return comandos
                 
 
-    def gerenciar_menu_ataque(self) -> list[Command]:
+    def gerenciar_menu(self, lista_acoes: dict[int, Callable[[], list[Command]]]) -> list[Command]:
         """Gerencia a escolha de ataque feita pelo jogador."""
         if self.batalha == None:
             raise ValueError("Ops, não está em batalha!")
@@ -83,36 +41,15 @@ class Jogador(Criatura):
 
             escolha = int(escolha)
 
-            acao = self.acoes_ataque.get(escolha)
+            acao = lista_acoes.get(escolha)
 
             if not acao:
                 print("Ação inválida.")
                 continue
 
-            valor = self.acoes_ataque[escolha]()
+            comandos = lista_acoes[escolha]()
             
-            return valor
-
-
-    def gerenciar_menu_buffs(self) -> None:
-        """Gerencia a escolha feita de buffs do jogador."""
-        while True:
-            escolha = input()
-
-            if not escolha.isdigit():
-                print("Escolha inválida.")
-                continue
-
-            escolha = int(escolha)
-
-            acao = self.acoes_buff.get(escolha)
-
-            if not acao:
-                print("Ação inválida.")
-                continue
-
-            self.acoes_buff[escolha]()
-            return
+            return comandos
 
 
     def escolher_alvo(self) -> Criatura:

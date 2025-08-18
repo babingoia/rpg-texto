@@ -20,12 +20,15 @@ class Criatura:
         Args:
             Batalha: Pode carregar uma instância de batalha na criatura diretamente. Por padrão é None.
         """
+        self.vida_maxima: int = 0
         self.vida = 0
-        self.mana = 0
+        self.mana = -1
+        self.mana_maxima = -1
         self.nome = None
         self.batalha: Union[Batalha, None] = batalha
-        self.acoes_ataque: dict[int, Callable[[], list[Command]]] = {}
-        self.acoes_buff: dict[int, Callable[[], list[Command]]] = {}
+        self.acoes: dict[int, Callable[[], list[Command]]] = {}
+        self.acoes_especiais: dict[int, Callable[[], list[Command]]] = {}
+
 
 
 

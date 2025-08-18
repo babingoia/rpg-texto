@@ -1,45 +1,22 @@
 #Commands de ataques
 #Libs
-from time import sleep
 from configuracoes import Combate, Cores, ConfiguracaoBasicaAtaque, ConfiguracaoInvocacao
 from typing import TYPE_CHECKING
 from factorys import FactoryCriatura
-
+from .base import Command
 
 if TYPE_CHECKING:
     from models import Criatura
 
-#Classes Abstratas
-class Command:
-    """Command abstrato de ataque."""
-    def __init__(self, rolagem: int | None = None) -> None:
-        self.rolagem = rolagem
 
-
-    def executar(self) -> None:
-        raise NotImplementedError
-    
-
-    def contagem_regressiva(self, segundos: int) -> None:
-        """Inicia uma contagem regressiva.
-        
-        Args:
-            segundos: quantidade de segundos que a contagem vai demorar.
-        """
-        for i in range(segundos, 0, -1):
-            print(f"{i}...", end=' ', flush=True)
-            sleep(1)
-        print('\n')
-
-
-#Classes especificas
+#Classes
 class CommandAtaqueBasico(Command):
     """Ataque básico."""
     def __init__(self, configurações: ConfiguracaoBasicaAtaque, alvo: "Criatura", rolagem: int) -> None:
-        super().__init__()
+        super().__init__(rolagem)
         self.cfg = configurações
         self.alvo = alvo
-        self.rolagem = rolagem
+
 
     def executar(self) -> None:
         print(self.cfg.MENSAGENS.MENSAGEM_INICIO)
@@ -73,16 +50,14 @@ class CommandInvocarCriatura(Command):
             cfg: Configuração Especifica da criatura para realizar invocações.
         """
 
-        super().__init__()
+        super().__init__(rolagem)
         self.criatura = criatura
         self.lista_criatura = lista_criaturas
-        self.rolagem = rolagem
         self.cfg = cfg
         self.factory = FactoryCriatura()
 
     
     def executar(self) -> None:
-        print(id(self.lista_criatura))
         print(self.cfg.MENSAGENS.MENSAGEM_INICIO)
         self.contagem_regressiva(3)
         quantidade_invocacoes: int

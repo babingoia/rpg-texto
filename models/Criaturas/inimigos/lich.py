@@ -42,7 +42,7 @@ class Esqueleto(IA):
 
 
 
-class Lich(Esqueleto):
+class Lich(IA):
     """Classe para controlar o Lich. Ele inicia com algumas características de um esqueleto básico."""
     def __init__(self) -> None:
         """Inicia características próprias, o resto é a da classe base Esqueleto."""
@@ -66,7 +66,6 @@ class Lich(Esqueleto):
             raise ValueError("Ops, não está em batalha!")
         
         rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
-        print(id(self.batalha.inimigos))
         comandos: list[Command] = [CommandInvocarCriatura('esqueleto', self.batalha.inimigos, rolagem, LICH.INVOCAR_ESQUELETO)]
 
         return comandos
@@ -101,7 +100,6 @@ class Lich(Esqueleto):
         if self.batalha == None:
             raise ValueError("Ops, não está em batalha!")
         
-        print("Batalha (Lich):", id(self.batalha))
-        comandos = self.invocar_esqueleto()
+        comandos = self.escolher_acao()
         
         return comandos

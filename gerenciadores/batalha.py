@@ -71,6 +71,12 @@ class Batalha:
         self.criaturas['inimigos'] = list(inimigos_vivos)
         self.criaturas['jogadores'] = list(jogadores_vivos)
 
+        self.inimigos = self.criaturas['inimigos']
+        self.jogadores = self.criaturas['jogadores']
+
+        print("Inimigos:", self.inimigos)
+        print("criaturas:", self.criaturas['inimigos'])
+
 
     def colocar_em_batalha(self) -> None:
         #Adiciona essa instancia de batalha a todas as criaturas envolvidas
@@ -84,21 +90,20 @@ class Batalha:
         Returns:
             Criatura: Retorna quem venceu a batalha.
         """
-        
-
+        self.colocar_em_batalha()
         #Começa o loop de batalha
         while len(self.jogadores) > 0 and len(self.inimigos) > 0:
-            self.colocar_em_batalha()
             for lista_criaturas in self.criaturas.values():
                 for criatura in lista_criaturas:
                     
                     self.mostrar_stats_globais()
                     comandos: list[Command] = criatura.turno()
-                    
+
                     for comando in comandos:
                         comando.executar()
-                    
+
                     self.checar_morte()
+                    self.colocar_em_batalha()
 
                     input("Aperte ENTER para continuar...")
                     self.limpar_tela()
@@ -107,4 +112,3 @@ class Batalha:
             return self.inimigos
         else:
             return self.jogadores
-

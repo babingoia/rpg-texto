@@ -26,14 +26,7 @@ class Dados:
     D10 = 10
     D12 = 12
     D20 = 20
-
-
-class Menus:
-    """Constantes de configurações de menus."""
-
-    MENU_ATAQUE = 1
-    MENU_BUFFS = 2
-
+    
 
 class ConfigFactoryCriarCriaturas:
     def __init__(self) -> None:
@@ -67,47 +60,53 @@ class Combate:
 class PALADINO():
     """Configurações básicas paladino"""
     #Instancias de composição
-    STATUS: ConfiguracaoStatus = ConfiguracaoStatus()
-    STATUS_MAGO: ConfiguracaoMago =  ConfiguracaoMago()
-    ATAQUE_BASICO: ConfiguracaoBasicaAtaque = ConfiguracaoBasicaAtaque()
-    ATAQUE_ESPECIAL: ConfiguracaoBasicaAtaque =  ConfiguracaoBasicaAtaque()
-    RECUPERAR_FOLEGO: RecuperarFolego = RecuperarFolego()
+    def __init__(self) -> None:
+        self.STATUS: ConfiguracaoStatus = ConfiguracaoStatus()
+        self.STATUS_MAGO: ConfiguracaoMago =  ConfiguracaoMago()
+        self.ATAQUE_BASICO: ConfiguracaoBasicaAtaque = ConfiguracaoBasicaAtaque()
+        self.ATAQUE_ESPECIAL: ConfiguracaoBasicaAtaque =  ConfiguracaoBasicaAtaque()
+        self.RECUPERAR_FOLEGO: RecuperarFolego = RecuperarFolego()
 
 
-    #Status
-    STATUS.NOME = 'paladino'
-    STATUS.VIDA = 80
-    STATUS_MAGO.MANA_MAXIMA = 10
-    STATUS_MAGO.RESTAURACAO_MANA_CRITICO = 1
-    
+        #Status
+        self.STATUS.NOME = 'paladino'
+        self.STATUS.VIDA = 80
+        self.STATUS_MAGO.MANA_MAXIMA = 10
+        self.STATUS_MAGO.RESTAURACAO_MANA_CRITICO = 1
+        
 
-    #Ataque básico
-    ATAQUE_BASICO.ID = 1
-    ATAQUE_BASICO.DANO = 10
-    ATAQUE_BASICO.MULTIPLICADOR_CRITICO = Combate.MULTIPLICADOR_CRITICO_PADRAO
+        #Ataque básico
+        self.ATAQUE_BASICO.ID = 1
+        self.ATAQUE_BASICO.DANO = 10
+        self.ATAQUE_BASICO.MULTIPLICADOR_CRITICO = Combate.MULTIPLICADOR_CRITICO_PADRAO
 
-    #Mensagens
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_CRITICO = f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n'
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_INICIO = "\nVocê segura sua espada com força, e vai pra cima do alvo, e..."
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_NORMAL = "\nVocê acerta seu golpe no alvo!\n"
+        #Mensagens
+        self.ATAQUE_BASICO.MENSAGENS.MENSAGEM_CRITICO = f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n'
+        self.ATAQUE_BASICO.MENSAGENS.MENSAGEM_INICIO = "\nVocê segura sua espada com força, e vai pra cima do alvo, e..."
+        self.ATAQUE_BASICO.MENSAGENS.MENSAGEM_NORMAL = "\nVocê acerta seu golpe no alvo!\n"
 
 
-    #Ataque especial
-    ATAQUE_ESPECIAL.ID = 3
-    ATAQUE_ESPECIAL.DANO = 25
-    ATAQUE_ESPECIAL.CUSTO = 5
-    
-    #Mensagens
-    ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_INICIO = f'\nVocê levanta sua espada, exibindo uma luz divina e vai pra cima do alvo com tudo o que tem, e...'
-    ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_NORMAL = f'\nVocê acerta seu golpe no alvo!\n'
-    ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_CRITICO = f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n'
-    
+        #Ataque especial
+        self.ATAQUE_ESPECIAL.ID = 2
+        self.ATAQUE_ESPECIAL.DANO = 25
+        self.ATAQUE_ESPECIAL.CUSTO = 5
+        
+        #Mensagens
+        self.ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_INICIO = f'\nVocê levanta sua espada, exibindo uma luz divina e vai pra cima do alvo com tudo o que tem, e...'
+        self.ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_NORMAL = f'\nVocê acerta seu golpe no alvo!\n'
+        self.ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_CRITICO = f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n'
+        
 
-    #Recuperar Folego
-    RECUPERAR_FOLEGO.ID = 1
-    RECUPERAR_FOLEGO.VIDA.TIPO_DADO = Dados.D10
-    RECUPERAR_FOLEGO.VIDA.QUANTIDADE_DADOS = 2
-    RECUPERAR_FOLEGO.MANA.QUANTIDADE = 1
+        #Recuperar Folego
+        self.RECUPERAR_FOLEGO.ID = 3
+        self.RECUPERAR_FOLEGO.VIDA.TIPO_DADO = Dados.D10
+        self.RECUPERAR_FOLEGO.VIDA.QUANTIDADE_DADOS = 2
+        self.RECUPERAR_FOLEGO.MANA.QUANTIDADE = 1
+
+        self.RECUPERAR_FOLEGO.VIDA.STATUS_RECUPERADO = 'vida'
+        self.RECUPERAR_FOLEGO.MANA.STATUS_RECUPERADO = 'mana'
+
+        self.RECUPERAR_FOLEGO.MENSAGENS.MENSAGEM_INICIO = f'Você se acalma e fecha os olhos, uma pequena aura dourada se forma em torno de seu corpo e você se sente melhor.'
 
 
 class ASSASSINO(): 

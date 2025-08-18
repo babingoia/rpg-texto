@@ -1,13 +1,14 @@
 #Biblioteca de classes abstratas para efeitos
 #libs
-
+from .configs_criaturas import MensagensRolagem
 
 #Classes abstratas
 class RecuperarStatusDado:
-    ID: int
-    TIPO_DADO: int
-    QUANTIDADE_DADOS: int
-    STATUS_RECUPERADO: str
+    def __init__(self) -> None:
+        self.ID: int = -1
+        self.TIPO_DADO: int = -1
+        self.QUANTIDADE_DADOS: int = -1
+        self.STATUS_RECUPERADO: str = ''
 
 
 class RecuperarStatus:
@@ -21,3 +22,4 @@ class RecuperarFolego:
     ID: int
     VIDA: RecuperarStatusDado = RecuperarStatusDado()
     MANA: RecuperarStatus = RecuperarStatus()
+    MENSAGENS = MensagensRolagem()

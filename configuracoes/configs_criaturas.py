@@ -18,7 +18,7 @@ class MensagensRolagem:
 class ConfiguracaoStatus:
     """Classe abstrata para configs basicas de criaturas."""
     def __init__(self) -> None:
-        self.NOME:str
+        self.NOME: str
         self.VIDA: int
 
 
