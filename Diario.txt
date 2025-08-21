@@ -1,0 +1,48 @@
+-> Tentar fazer um sistema de seleção de alvo melhor pros dois menus.
+
+-> Tentar fazer o dano ser computado dentro de batalha.
+    *Flag pra mostrar se o dano é em área ou não.
+    *Retornar dano e alvo.
+    *Retornar None se não tiver dano.
+
+-> Solução mágica: Command pattern pros ataques, resolve 100% dos problemas.
+
+-> Modularizar configurações
+-> Ajustar as classes para usarem das configurações
+
+-> Criar biblioteca de ataques com commands.
+-> Criar configs genéricas com base na biblioteca de commands.
+-> Criar configs especificas com base nas configs genéricas.
+-> No método de ataque das subclasses de criarturas, adicionar a lógica de escolha dos commands
+e colocar para que elas retornem uma lista de commands.
+-> Retornar essa lista de commands pra batalha.
+-> Batalha executa os commands.
+
+ATUALIZAÇÕES 16/08
+-> Fluxo de commands funcionando perfeitamente
+-> Configurações modularizadas o máximo que dava.
+
+-> Criar agora os commands dos outros ataques.
+-> Ajustar as configurações que faltam.
+
+ATUALIZAÇÕES 17/08
+-> Preciso criar um fluxo melhor pras UIs, elas estão genéricas, mas não tem como mudar direito e, por conta disso, o ataque especial do paladino não funciona como deveria, o turno precisa ser cancelado.
+
+-> Provavelmente a solução é jogar esse fluxo pra dentro do turno e não aninhar uma tela dentro da outra.
+
+ATUALIZAÇÕES 19/08
+Discuti um pouco com o claude, li algumas coisas no livro da gang of four e provavelmente oq eu preciso é de um MVC (Model, View, Controller) a UI tá completamente acoplada e emaranhada com o models e meu controle sobre o jogo vai começar a dar problema logo logo, deixar tudo em batalha dá uma facilitada nessa parte.
+
+Tá, eu preciso parar e voltar só quando eu enteder pelo menos qual problema cada um dos padrões de projeto resolvem. As pastas já estão mais ou menos estruturadas em modelo MVC.
+
+ATUALIZAÇÕES 20/08
+-> Criar uma factory de comandos.
+-> Interfaces para resolver import circular.
+-> Transformar flags em strategy.
+
+
+Estamos andando, fluxo com o ataque básico do paladino tá quase 100% falta só a view, a ação turno acabou de ficar completamente inútil visto que quem vai gerenciar isso vai ser a view então eu tirei ela.
+
+Criatura base agora tá só implementando uns métodos bem básicos de get e set.
+
+Configurações foram trocadas de composisão de objetos por dicionários visando a flexibilidade de atributos e acoes, os commands não precisam conhecer todos os campos só checar se o campo que eles vão mexer existe.

@@ -1,46 +1,39 @@
 # Classe Paladino
 #Libs
-from configuracoes import PALADINO, Combate,  Cores
-from ..base import Jogador
+from configuracoes import PALADINO, Combate
+from ..base import CriaturaBase
+from interfaces import ICriatura, ICommand
 from typing import Callable
-from commands import Command, CommandAtaqueBasico
+from commands import CommandAtaqueBasico
 
 
-class Paladino(Jogador):
+
+class Paladino(CriaturaBase):
     """Classe especifica para criar um paladino."""
-    def __init__(self):
+    def __init__(self, configuracoes: PALADINO = cfg):
         """Cria uma instância de paladino com suas características básicas."""
-        super().__init__()
-        self.nome = PALADINO.STATUS.NOME
-        self.vida: int = PALADINO.STATUS.VIDA
-        self.mana: int = PALADINO.STATUS_MAGO.MANA_MAXIMA
+        super().__init__(configuracoes.NOME, configuracoes.ATRIBUTOS)
 
-        #Esse distinção de ações é importante por conta que umas precisam de alvo e outras não.
-        self.acoes_ataque: dict[int, Callable[[], int]] = {
-            PALADINO.ATAQUE_BASICO.ID: self.atacar,
-            PALADINO.ATAQUE_ESPECIAL.ID: self.ataque_especial
+        self.configuracoes = configuracoes
+
+        self.acoes: dict[int, Callable[[ICriatura], list[ICommand]]] = {
+            configuracoes.ATAQUE_BASICO['id']: lambda alvo: self.atacar(alvo),
+            configuracoes.ATAQUE_ESPECIAL['id']: lambda alvo: self.ataque_especial(alvo),
+            configuracoes.RECUPERAR_FOLEGO['id']: lambda: self.recuperar_folego()
         }
-
-        self.acoes_buff: dict[int, Callable[[], None]] = {
-            PALADINO.RECUPERAR_FOLEGO.ID: self.recuperar_folego
-        }
-
         
 
     #Acoes
-    def atacar(self) -> list[Command]:
+    def atacar(self, alvo: ICriatura) -> list[ICommand]:
         """Ataque básico do paladino em combate."""
         
         rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
-        alvo = self.escolher_alvo()
-        
-        if alvo == None:
-            raise ValueError("Alvo nulo.")
+        comandos: list[ICommand] = [CommandAtaqueBasico(self.nome, rolagem, self.configuracoes.ATAQUE_BASICO, alvo)]
+
 
         if rolagem == Combate.CRITICO:
-            self.mana += PALADINO.STATUS_MAGO.RESTAURACAO_MANA_CRITICO
-        
-        comandos: list[Command] = [CommandAtaqueBasico(PALADINO.ATAQUE_BASICO, alvo, rolagem)]
+            self.atributos['mana_atual'] += min(self.atributos['mana_maxima'], self.atributos['mana_maxima'] + self.configuracoes.ATRIBUTOS['restauracao_mana_critico'])
+
 
         return comandos
 
@@ -76,26 +69,3 @@ class Paladino(Jogador):
         else:
             print('\nVocê acerta seu golpe no alvo!\n[[Causou 25 de dano]]')
             return PALADINO.DANO_ATAQUE_ESPECIAL
-
-
-    #Menus
-    """def menu_ataque(self) -> None:
-        Cria um menu para a escolha de ações de ataque.
-        print(f"{PALADINO.ATAQUE_BASICO.ID}- Atacar (dano em 1 alvo)")
-        if self.mana >= PALADINO.ATAQUE_ESPECIAL.CUSTO:
-            print(f'{PALADINO.ATAQUE_ESPECIAL.ID} - ATAQUE ESPECIAL disponível! (25 de dano normal/50 de dano crítico)')
-        comandos = self.gerenciar_menu_ataque()
-        return comandos
-
-    
-    def menu_buffs(self) -> None:
-        Cria um menu para a escolha de ações de buff.
-        print(f"{PALADINO.RECUPERAR_FOLEGO.ID} - Se recuperar (Se cura em 2d8 e + 1 de stamina)")
-        self.gerenciar_menu_buffs()
-    """
-
-    #Outros metodos
-    def turno(self) -> list[Command]:
-        """Gerencia o turno do paladino em combate."""
-        comandos = self.menu_acoes()
-        return comandos

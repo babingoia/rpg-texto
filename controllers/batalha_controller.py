@@ -1,19 +1,15 @@
-# Classe base para instância de batalha
+# Classe concreta para instâncias de batalha.
 #Libs
-from __future__ import annotations
-from os import system, name
-from typing import TYPE_CHECKING, Union
-from commands import Command
+from typing import Union
+from interfaces import IBatalha
 
-if TYPE_CHECKING:
-    from models import Jogador, Criatura  
 
 #Classes
-class Batalha:
+class Batalha(IBatalha):
     """Classe que gerencia as batalhas.
         -> Necessita uma configuração inicial de criaturas.
     """
-    def __init__(self, inimigos: list[Criatura], jogadores: list[Criatura]) -> None:
+    def __init__(self, inimigos: list[Criatura], jogadores: list[Criatura], tela: IBatalhaView) -> None:
         """Faz a criação de uma instância de batalha.
             
         Args:
@@ -27,28 +23,6 @@ class Batalha:
         self.jogadores = self.criaturas["jogadores"]
         self.inimigos = self.criaturas["inimigos"]
         print(id(self.inimigos))
-
-    def mostrar_stats_globais(self) -> None:
-        """Mostra os status de todas as criaturas envolvidas na batalha."""
-        
-        print("Inimigos:")
-        for inimigo in self.inimigos:
-            inimigo.mostrar_stats()
-        print()
-
-        
-        print("Jogadores:")
-        for jogador in self.jogadores:
-            jogador.mostrar_stats()
-        print()
-
-        
-    def limpar_tela(self) -> None:
-        """Limpa a tela do CMD"""
-        if name == 'nt':
-            system("cls")
-        else:
-            system("clear")
 
     
     def checar_morte(self):

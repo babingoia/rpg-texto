@@ -1,0 +1,1 @@
+from .interfaces import IAlvoStrategy, ICriatura, IBatalha, ICommand

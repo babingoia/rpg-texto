@@ -1,0 +1,1 @@
+from .configurações_jogadores import PALADINO

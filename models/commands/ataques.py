@@ -1,67 +1,48 @@
 #Commands de ataques
 #Libs
-from time import sleep
-from configuracoes import Combate, Cores, ConfiguracaoBasicaAtaque, ConfiguracaoInvocacao
-from typing import TYPE_CHECKING
+from interfaces import ICommand, ICriatura
+from configuracoes import Combate
 from factorys import FactoryCriatura
 
 
-if TYPE_CHECKING:
-    from models import Criatura
-
-#Classes Abstratas
-class Command:
-    """Command abstrato de ataque."""
-    def __init__(self, rolagem: int | None = None) -> None:
+#Classes
+class CommandBase(ICommand):
+    def __init__(self, nome: str, rolagem: int, config: dict[str,int], alvo: ICriatura | None = None) -> None:
+        self.nome = nome
         self.rolagem = rolagem
-
-
+        self.config = config
+        self.alvo = alvo
+    
+    
     def executar(self) -> None:
         raise NotImplementedError
-    
-
-    def contagem_regressiva(self, segundos: int) -> None:
-        """Inicia uma contagem regressiva.
-        
-        Args:
-            segundos: quantidade de segundos que a contagem vai demorar.
-        """
-        for i in range(segundos, 0, -1):
-            print(f"{i}...", end=' ', flush=True)
-            sleep(1)
-        print('\n')
 
 
-#Classes especificas
-class CommandAtaqueBasico(Command):
+class CommandAtaqueBasico(CommandBase):
     """Ataque básico."""
-    def __init__(self, configurações: ConfiguracaoBasicaAtaque, alvo: "Criatura", rolagem: int) -> None:
-        super().__init__()
-        self.cfg = configurações
-        self.alvo = alvo
-        self.rolagem = rolagem
+    def __init__(self, nome: str, rolagem: int, config: dict[str,int], alvo: ICriatura) -> None:
+        super().__init__(nome, rolagem, config, alvo)
+
 
     def executar(self) -> None:
-        print(self.cfg.MENSAGENS.MENSAGEM_INICIO)
-        self.contagem_regressiva(Combate.DELAY_MEDIO)
+        if self.alvo == None:
+            raise ValueError("Alvo não encontrado!")
+        
         dano: int = 0
 
         if self.rolagem == Combate.FALHA:
             dano = Combate.DANO_FALHA
-            print(self.cfg.MENSAGENS.MENSAGEM_FALHA)
             
         elif self.rolagem == Combate.CRITICO:
-            dano = self.cfg.DANO * self.cfg.MULTIPLICADOR_CRITICO
-            print(self.cfg.MENSAGENS.MENSAGEM_CRITICO, f'[[Causou {dano} de dano]]{Cores.RESET}')
+            dano = self.config['dano'] * self.config['multiplicador_critico']
             
         else:
-            dano = self.cfg.DANO
-            print(self.cfg.MENSAGENS.MENSAGEM_NORMAL, f'[[Causou {dano} de dano]]')
-            
-        self.alvo.vida -= dano
+            dano = self.config['dano']
+        
+        self.alvo.set_atributos('vida_atual', -1*dano)
 
 
-class CommandInvocarCriatura(Command):
+class CommandInvocarCriatura(CommandBase):
     """Comando que executa a ação de invocar alguma criatura.
     """
     def __init__(self, criatura: str, lista_criaturas: list['Criatura'], rolagem: int, cfg: ConfiguracaoInvocacao) -> None:

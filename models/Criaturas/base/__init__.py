@@ -1,2 +1,1 @@
-from .criatura import Criatura
-from .flags import IA, Jogador
+from .criatura import CriaturaBase
