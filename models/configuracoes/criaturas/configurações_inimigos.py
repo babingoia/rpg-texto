@@ -1,58 +1,63 @@
 #Configurações específicas de inimigos.
 #libs
-
+from typing import Union
+from ..outras_configs import Combate
 
 #Classes
 class ESQUELETO():
     """Configurações da classe Esqueleto."""
 
-    STATUS = ConfiguracaoStatus()
-    ATAQUE_BASICO = ConfiguracaoBasicaAtaque()
+    NOME: str = 'esqueleto'
+    
+    ATRIBUTOS: dict[str, int] = {
+        'vida_maxima': 10,
+        'vida_atual': 10
+    }
 
-    STATUS.NOME= 'esqueleto'
-    STATUS.VIDA= 10
 
-    ATAQUE_BASICO.MULTIPLICADOR_CRITICO = Combate.MULTIPLICADOR_CRITICO_PADRAO
-
-    ATAQUE_BASICO.ID = 1
-    ATAQUE_BASICO.DANO = 4
-
-    #Mensagens
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_CRITICO = f'\nELE TE ACERTA EM CHEIO!!!\n'
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_FALHA = f'\nVocê consegue desviar do ataque a tempo!'
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_INICIO = f'\nO esqueleto corre em sua direção com a espada levantada...'
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_NORMAL = f'\nEle te corta.\n'
+    ATAQUES: dict[str, dict[str, Union[str, int]]] = {
+        'ataque_basico': {
+            'id': 1,
+            'dano': 4,
+            'multiplicador_critico': Combate.MULTIPLICADOR_CRITICO_PADRAO,
+            'mensagem_inicial': f'\nO esqueleto corre em sua direção com a espada levantada...',
+            'mensagem_falha': f'\nVocê consegue desviar do ataque a tempo!',
+            'mensagem_normal': f'\nEle te corta.\n',
+            'mensagem_critico': f'\nELE TE ACERTA EM CHEIO!!!\n'
+        }
+    }
 
 
 class LICH():
     """Configuroções da classe de Lich."""
 
-    STATUS = ConfiguracaoStatus()
-    ATAQUE_BASICO = ConfiguracaoBasicaAtaque()
-    INVOCAR_ESQUELETO = ConfiguracaoInvocacao()
+    NOME: str = 'lich'
 
 
-    STATUS.NOME = 'Lich'
-    STATUS.VIDA = 100
-    ATAQUE_BASICO.MULTIPLICADOR_CRITICO = Combate.MULTIPLICADOR_CRITICO_PADRAO
+    ATRIBUTOS: dict[str, int] = {
+        'vida_maxima': 100,
+        'vida_atual': 100,
+    }
 
-    #IDs
-    ATAQUE_BASICO.ID = 1
-    INVOCAR_ESQUELETO.ID = 2
 
-    #Danos
-    ATAQUE_BASICO.DANO = 10
-    INVOCAR_ESQUELETO.QUANTIDADE_INVOCACOES = 1
-    INVOCAR_ESQUELETO.QUANTIDADE_INVOCACOES_CRITICO = 2
+    ATAQUES: dict[str, dict[str, Union[str, int]]] = {
+        'ataque_basico': {
+            'id': 1,
+            'dano': 10,
+            'multiplicador_critico': Combate.MULTIPLICADOR_CRITICO_PADRAO,
+            'mensagem_inicio': f'\nO Lich levanta suas mãos, invocando um raio necromante...',
+            'mensagem_falha': f'\nVocê consegue desviar da magia a tempo!',
+            'mensagem_normal': f'\nEle acerta o raio em você.\n',
+            'mensagem_critico': f'\nELE TE ACERTA EM CHEIO!!!\n',
+            },
 
-    #Mensagens
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_INICIO = f'\nO Lich levanta suas mãos, invocando um raio necromante...'
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_FALHA = f'\nVocê consegue desviar da magia a tempo!'
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_NORMAL = f'\nEle acerta o raio em você.\n'
-    ATAQUE_BASICO.MENSAGENS.MENSAGEM_CRITICO = f'\nELE TE ACERTA EM CHEIO!!!\n'
-
-    INVOCAR_ESQUELETO.MENSAGENS.MENSAGEM_INICIO = f'\n O Lich toca na terra, fazendo-a tremer...'
-    INVOCAR_ESQUELETO.MENSAGENS.MENSAGEM_FALHA = f'\n Nada acontece'
-    INVOCAR_ESQUELETO.MENSAGENS.MENSAGEM_NORMAL = f'\n esqueleto surge da terra.'
-    INVOCAR_ESQUELETO.MENSAGENS.MENSAGEM_CRITICO = f'\n esqueletos surgem da terra!'
-    
+        'invocar_esqueleto': {
+            'id': 2,
+            'quantidade_invocações': 1,
+            'multiplicador_critico': Combate.MULTIPLICADOR_CRITICO_PADRAO,
+            'mensagem_inicio': f'\n O Lich toca na terra, fazendo-a tremer...',
+            'mensagem_falha': f'\n Nada acontece',
+            'mensagem_normal': f'\n esqueleto surge da terra.',
+            'mensagem_critico': f'\n esqueletos surgem da terra!'
+    }
+    }

@@ -1,30 +1,56 @@
 #Commands de ataques
 #Libs
-from interfaces import ICommand, ICriatura
+from interfaces import ICommand, ICriatura, IData, IDataFactory
 from configuracoes import Combate
 from factorys import FactoryCriatura
-
+from typing import Any
 
 #Classes
 class CommandBase(ICommand):
-    def __init__(self, nome: str, rolagem: int, config: dict[str,int], alvo: ICriatura | None = None) -> None:
+    def __init__(self, nome: str, rolagem: int, config: dict[str, Any], data_factory: IDataFactory, alvo: ICriatura | None = None) -> None:
         self.nome = nome
         self.rolagem = rolagem
         self.config = config
         self.alvo = alvo
+        self.data_factory = data_factory
     
     
-    def executar(self) -> None:
+    def executar(self) -> list[IData]:
         raise NotImplementedError
+
+
+    def montar_mensagem(self) -> list[IData]:
+
+        mensagens: list[IData] = []
+        mensagens.append(self.data_factory.criar('view', {'': self.config['mensagem_inicio']}))
+
+        if self.rolagem == Combate.CRITICO:
+            
+            mensagem = self.data_factory.criar('view', {
+                '': self.config['mensagem_critico']
+            })
+        
+        elif self.rolagem == Combate.FALHA:
+            mensagem = self.data_factory.criar('view', {
+                '': self.config['mensagem_falha']
+            })
+        
+        else:
+            mensagem = self.data_factory.criar('view', {
+                '': self.config['mensagem_normal']
+            })
+        
+        mensagens.append(mensagem)
+        return mensagens
 
 
 class CommandAtaqueBasico(CommandBase):
     """Ataque básico."""
-    def __init__(self, nome: str, rolagem: int, config: dict[str,int], alvo: ICriatura) -> None:
-        super().__init__(nome, rolagem, config, alvo)
+    def __init__(self, nome: str, rolagem: int, config: dict[str,int], data_factory: IDataFactory, alvo: ICriatura) -> None:
+        super().__init__(nome, rolagem, config, data_factory, alvo)
 
 
-    def executar(self) -> None:
+    def executar(self) -> list[IData]:
         if self.alvo == None:
             raise ValueError("Alvo não encontrado!")
         
@@ -40,6 +66,10 @@ class CommandAtaqueBasico(CommandBase):
             dano = self.config['dano']
         
         self.alvo.set_atributos('vida_atual', -1*dano)
+        
+        mensagem = self.montar_mensagem()
+
+        return mensagem
 
 
 class CommandInvocarCriatura(CommandBase):

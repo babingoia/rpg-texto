@@ -2,24 +2,22 @@
 
 #libs
 from configuracoes import ConfigFactoryCriarCriaturas
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from models import Criatura
+from interfaces import ICriatura, ICriaturaFactory
 
 cfg = ConfigFactoryCriarCriaturas()
 
-class FactoryCriatura:
+class FactoryCriatura(ICriaturaFactory):
     """Classe estática que cria instâncias de criaturas."""
     @staticmethod
-    def criar_criatura(criatura: str) -> 'Criatura':
+    def criar(tipo: str) -> ICriatura:
         """Método que cria uma instância de alguma criatura.
         
         Args:
         criatura: String com o nome da criatura a ser criada.
         """
         from models import Lich, Esqueleto, Clerigo, Paladino, Assassino
-        match criatura:
+        
+        match tipo:
             
             case cfg.ESQUELETO:
                 return Esqueleto()

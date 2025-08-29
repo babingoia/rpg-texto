@@ -46,3 +46,11 @@ Estamos andando, fluxo com o ataque básico do paladino tá quase 100% falta só
 Criatura base agora tá só implementando uns métodos bem básicos de get e set.
 
 Configurações foram trocadas de composisão de objetos por dicionários visando a flexibilidade de atributos e acoes, os commands não precisam conhecer todos os campos só checar se o campo que eles vão mexer existe.
+
+ATUALIZAÇÕES 28/08
+Vou anotar pequenas otimizações possíveis.
+
+-> Juntar as interfaces de factorys em uma com **kwargs.
+-> Arrumar lich
+-> Os commands ainda estão executando mensagens...
+-> Criar uma factory de comandos

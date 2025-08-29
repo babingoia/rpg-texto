@@ -1,1 +1,2 @@
-from .interfaces import IAlvoStrategy, ICriatura, IBatalha, ICommand
+from .interfaces import ICriatura, IBatalha, ICommand, IView, IData, IDataFactory, IViewFactory, IAtaqueStrategy, IAtaqueStrategyFactory, ICriaturaFactory
+from .dtos import DataFactory

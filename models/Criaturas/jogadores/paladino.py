@@ -69,3 +69,7 @@ class Paladino(CriaturaBase):
         else:
             print('\nVocê acerta seu golpe no alvo!\n[[Causou 25 de dano]]')
             return PALADINO.DANO_ATAQUE_ESPECIAL
+
+
+    def executar_acao(self, acao: int, alvo: ICriatura) -> list[ICommand]:
+        comandos: list[ICommand] = self.acoes[acao]()

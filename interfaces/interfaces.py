@@ -1,32 +1,34 @@
 #Interfaces do sistema.
 #libs
 from abc import ABC, abstractmethod
-from time import sleep
-from random import randint
-from typing import Callable
+from typing import Callable, Any, Optional
+
+#Interface
+class IAtaqueStrategy(ABC):
+    @abstractmethod
+    def escolher_alvo(self, alvos: dict[str, list['ICriatura']]) -> 'ICriatura': pass
 
 
-#Interfaces
 class ICommand(ABC):
     @abstractmethod
-    def executar(self) -> None: pass
+    def executar(self) -> list['IData']: pass
 
-    def contagem_regressiva(self, segundos: int) -> None:
-        """Inicia uma contagem regressiva.
-        
-        Args:
-            segundos: quantidade de segundos que a contagem vai demorar.
-        """
-        for i in range(segundos, 0, -1):
-            print(f"{i}...", end=' ', flush=True)
-            sleep(1)
-        print('\n')
+
+class IData(ABC):
+    @abstractmethod
+    def get_data(self) -> dict[Any, Any]: pass
+
+    @abstractmethod
+    def add(self, chave: Any, valor: Any) -> None: pass
+
+    @abstractmethod
+    def remove(self, chave: Any, valor: Any) -> None: pass
+
+    @abstractmethod
+    def update(self, dados: dict[Any, Any]) -> None: pass
 
 
 class ICriatura(ABC):
-    @abstractmethod
-    def get_acoes(self) -> dict[int, Callable[['ICriatura'], list[ICommand]]]: pass
-
     @abstractmethod
     def get_atributos(self) -> dict[str, int]: pass
 
@@ -36,35 +38,54 @@ class ICriatura(ABC):
     @abstractmethod
     def set_atributos(self, atributo: str, valor: int) -> None: pass
 
-    def rolar_dados(self, dado: int, n_dados: int, valor: int = 0) -> int:
-        """Rola um dado de x lados x vezes.
-        
-        Args:
-            dado: Quantidade de lados do dado a ser rolado.
-            n_dados: Quantidade de dados a serem rolados.
-            valor: É o número inicial sem nenhuma rolagem de dados, pode ser usado para atribuir um bônus inicial. Valor padrão 0.
-        """
-        valor += randint(1,dado)
-        
-        n_dados -= 1
-        
-        if n_dados > 0:
-            return self.rolar_dados(dado, n_dados, valor) #Loop recursivo.
-
-        return valor    
-
-
-class IAlvoStrategy(ABC):
     @abstractmethod
-    def escolher_alvo(self, alvos: list[ICriatura]) -> ICriatura: pass
+    def get_acoes(self) -> dict[int, Callable[['ICriatura'], list[ICommand]]]: pass
+
+    @abstractmethod
+    def executar_acao(self, acao: int, alvo: Optional['ICriatura']) -> list[ICommand]: pass
 
 
 class IBatalha(ABC):
     @abstractmethod
-    def iniciar (self) -> None: pass
+    def iniciar (self) -> str: pass
 
     @abstractmethod
     def get_inimigos(self) -> list[ICriatura]: pass
 
     @abstractmethod
     def get_jogadores(self) -> list[ICriatura]: pass
+
+
+class IView(ABC):
+    @abstractmethod
+    def mostrar(self, dados: IData) -> None: pass
+
+    @abstractmethod
+    def get_input(self, check: list[int] | None = None) -> int: pass
+
+    @abstractmethod
+    def limpar_tela(self) -> None: pass
+
+
+class IViewFactory(ABC):
+    @staticmethod
+    @abstractmethod
+    def criar(tipo: str) -> IView: pass
+
+
+class IDataFactory(ABC):
+    @staticmethod
+    @abstractmethod
+    def criar(tipo: str, dados: dict[Any, Any]={}) -> IData: pass
+
+
+class IAtaqueStrategyFactory(ABC):
+    @staticmethod
+    @abstractmethod
+    def criar(tipo: str, **kwargs: Any) -> IAtaqueStrategy: pass
+
+
+class ICriaturaFactory(ABC):
+    @staticmethod
+    @abstractmethod
+    def criar(tipo: str) -> ICriatura: pass
