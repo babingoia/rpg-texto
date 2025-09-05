@@ -1,1 +1,1 @@
-from .ataques import Command, CommandAtaqueBasico, CommandInvocarCriatura
+from .ataques import CommandAtaqueBasico, CommandInvocarCriatura, CommandBase

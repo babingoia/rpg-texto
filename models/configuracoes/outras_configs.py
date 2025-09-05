@@ -4,16 +4,6 @@
 
 #Classes
 #Globais
-class Cores:
-    """Subbiblioteca com as cores"""
-    YELLOW = '\033[93m'
-    RESET = '\033[0m'
-    RED = '\033[91m'      
-    GREEN = '\033[92m'    
-    BLUE = '\033[94m'     
-    PURPLE = '\033[95m'
-
-
 class Dados:
     """Subblioteca com os tipos de dados do projeto."""
 
@@ -53,12 +43,3 @@ class Combate:
     DELAY_MEDIO: int = 3
     DELAY_LONGO: int = 5
 
-
-#Classes Basicas
-class MensagensRolagem:
-    """Classe abstrata para mensagens de rolagens de dados."""
-    def __init__(self) -> None:
-        self.MENSAGEM_INICIO: str
-        self.MENSAGEM_FALHA: str = "\nInfelizmente você erra o ataque."
-        self.MENSAGEM_NORMAL: str
-        self.MENSAGEM_CRITICO: str

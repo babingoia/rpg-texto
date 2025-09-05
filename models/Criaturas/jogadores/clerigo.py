@@ -1,14 +1,12 @@
 #Classe do clérigo
 #libs
-from ..base import Jogador
-from gerenciadores import Batalha
-from configuracoes import CLERIGO, Combate, Cores
-
+from ...configuracoes.outras_configs import Combate
+from ...configuracoes.criaturas.configurações_jogadores import CLERIGO
+from interfaces import ICriatura
 
 #Classes
-class Clerigo(Jogador):
-    def __init__(self, batalha: Batalha | None = None) -> None:
-        super().__init__(batalha)
+class Clerigo(ICriatura):
+    def __init__(self) -> None:
         self.nome = CLERIGO.NOME
         self.vida: int = CLERIGO.VIDA
         self.mana: int = CLERIGO.MANA_INICIAL

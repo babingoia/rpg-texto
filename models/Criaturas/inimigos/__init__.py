@@ -1,1 +1,1 @@
-from .lich import Lich, Esqueleto
+from .lich import Esqueleto, Lich

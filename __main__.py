@@ -1,9 +1,9 @@
 #Inicia o programa
 # Libs
-from interfaces import ICriatura, DataFactory
-from views import ViewFactory
+from interfaces import ICriatura, BatalhaData
+from views.batalha_view import BatalhaView
 from models import FactoryCriatura
-from controllers import Batalha, AtaqueStrategyFactory
+from controllers import Batalha
 
 
 #Variaveis globais
@@ -30,9 +30,22 @@ def main():
     inimigos.append(lich)
     jogadores.append(jogador)
 
-    batalha = Batalha(ViewFactory(), DataFactory(), jogadores, inimigos, AtaqueStrategyFactory())
+    batalha_data: BatalhaData = {
+        'inimigos': inimigos,
+        'jogadores': jogadores,
+        'ordem_turnos': []
+    }
 
-    vencedor = batalha.iniciar()
+    view: BatalhaView = BatalhaView()
+
+    batalha = Batalha(batalha_data)
+
+    view.subscribe(batalha)
+    batalha.subscribe(view)
+
+    vencedor = 'jogador'
+
+    batalha.iniciar()
 
     if vencedor == 'jogador':
         print('\nINCRÍVEL!!! Você conseguiu derrotar o temido Lich.\nDepois de todos os perrengues, o seu esforço deu resultados. Meus parabéns!\nVocê zerou o jogo.')

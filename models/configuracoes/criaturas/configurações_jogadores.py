@@ -1,17 +1,17 @@
 #Configurações específicas para jogadores.
 #libs
 from ..outras_configs import Combate, Dados
-from dataclasses import dataclass
-
+from views import Cores
+from interfaces import AtributosMagicos
+from typing import Union
 
 #Jogadores
-@dataclass
 class PALADINO():
     """Configurações básicas paladino"""
     #Instancias de composição
     def __init__(self) -> None:
-        self.NOME: str = 'paladino'
-        self.ATRIBUTOS: dict[str, int] = {
+        self.nome: str = 'paladino'
+        self.atributos: AtributosMagicos = {
             'vida_maxima': 80,
             'vida_atual': 80,
             'mana_maxima': 10,
@@ -19,38 +19,34 @@ class PALADINO():
             'restauracao_mana_critico': 1,
         }
 
-        self.ATAQUE_BASICO: dict[str, int] = {
-            'id': 1,
-            'dano': 10,
-            'multiplicador_critico': Combate.MULTIPLICADOR_CRITICO_PADRAO
+        self.ataques: dict[str, dict[str, Union[str, int]]] = {
+            'ataque_basico': {
+                'id': 1,
+                'dano': 10,
+                'multiplicador_critico': Combate.MULTIPLICADOR_CRITICO_PADRAO,
+                'mensagem_inicio': f'\nVocê segura sua espada com força, e vai pra cima do alvo, e...' ,
+                'mensagem_falha': f'\nVocê erra o ataque.',
+                'mensagem_normal': f'\nVocê acerta seu golpe no alvo!\n' ,
+                'mensagem_critico': f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n' ,
+                },
+            'ataque_especial': {
+                'id': 2,
+                'dano': 25,
+                'custo': 5,
+                'multiplicador_critico': Combate.MULTIPLICADOR_CRITICO_PADRAO,
+                'mensagem_inicio': f'\nVocê levanta sua espada, exibindo uma luz divina e vai pra cima do alvo com tudo o que tem, e...',
+                'mensagem_falha': f'Voce erra o ataque.',
+                'mensagem_normal': f'\nVocê acerta seu golpe no alvo!\n' ,
+                'mensagem_critico': f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n',
+                },
+            'recuperar_folego': {
+                'id': 3,
+                'tipo_dado': Dados.D10,
+                'quantidade_dados': 2,
+                'restauracao_mana_quantidade': 1,
+                'mensagem_inicio': f'Você se acalma e fecha os olhos, uma pequena aura dourada se forma em torno de seu corpo e você se sente melhor.' ,
+            }
         }
-
-        self.ATAQUE_ESPECIAL: dict[str, int] = {
-            'id': 2,
-            'dano': 25,
-            'custo': 5,
-            'multiplicador_critico': Combate.MULTIPLICADOR_CRITICO_PADRAO
-        }
-
-        self.RECUPERAR_FOLEGO: dict[str, int] = {
-            'id': 3,
-            'tipo_dado': Dados.D10,
-            'quantidade_dados': 2,
-            'restauracao_mana_quantidade': 1
-        }
-
-"""        #Mensagens
-        self.ATAQUE_BASICO.MENSAGENS.MENSAGEM_CRITICO = f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n'
-        self.ATAQUE_BASICO.MENSAGENS.MENSAGEM_INICIO = "\nVocê segura sua espada com força, e vai pra cima do alvo, e..."
-        self.ATAQUE_BASICO.MENSAGENS.MENSAGEM_NORMAL = "\nVocê acerta seu golpe no alvo!\n"
-        
-        #Mensagens
-        self.ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_INICIO = f'\nVocê levanta sua espada, exibindo uma luz divina e vai pra cima do alvo com tudo o que tem, e...'
-        self.ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_NORMAL = f'\nVocê acerta seu golpe no alvo!\n'
-        self.ATAQUE_ESPECIAL.MENSAGENS.MENSAGEM_CRITICO = f'{Cores.YELLOW}\nVocê acerta um golpe crítico!!!\n'
-        
-
-        self.RECUPERAR_FOLEGO.MENSAGENS.MENSAGEM_INICIO = f'Você se acalma e fecha os olhos, uma pequena aura dourada se forma em torno de seu corpo e você se sente melhor.'"""
 
 
 class ASSASSINO(): 

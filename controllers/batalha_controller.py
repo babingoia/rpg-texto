@@ -1,39 +1,33 @@
 #Classe concreta para instâncias de batalha.
 #Libs
-from interfaces import ICriatura, ICommand, IDataFactory, IViewFactory, IData, IAtaqueStrategyFactory, IBatalha
-from typing import Callable, cast
-from inspect import signature
-from helpers import convert_to_message
+from interfaces import ICriatura, ICommand, IBatalha, BatalhaData, BatalhaInicioTurno, BatalhaFinalTurno, BatalhaFinal, Escolhas, IViewSubscriber
+from .batalha_subject import BaseBatalhaSubject
+from random import shuffle
+from typing import Union
+
 
 #Classes
-class Batalha(IBatalha):
+class Batalha(IBatalha, BaseBatalhaSubject, IViewSubscriber):
     """Classe que gerencia as batalhas.
         -> Necessita uma configuração inicial de criaturas.
     """
-    def __init__(self, view_factory: IViewFactory, data_factory: IDataFactory, jogadores: list[ICriatura], inimigos: list[ICriatura], strategy_factory: IAtaqueStrategyFactory) -> None:
+    def __init__(self, criaturas: BatalhaData) -> None:
         """Faz a criação de uma instância de batalha.
             
         Args:
             inimigos: Lista de inimigos dentro da batalha.
             jogadores: Lista de jogadores dentro da batalha.
         """
-        self.view_factory = view_factory
-        self.data_factory = data_factory
-        self.strategy_factory = strategy_factory
-
-        self.tela = view_factory.criar('batalha')
-        self.dados = data_factory.criar('batalha', {'inimigos': inimigos, 'jogadores': jogadores})
+        super().__init__()
+        self.jogador_escolhas: Escolhas
+        self.dados = criaturas
 
 
-    def get_inimigos(self) -> list[ICriatura]:
-        return super().get_inimigos()
-    
-
-    def get_jogadores(self) -> list[ICriatura]:
-        return super().get_jogadores()
+    def get_input_update(self, escolhas: Escolhas) -> None:
+        self.jogador_escolhas = escolhas
 
 
-    def checar_morte(self, dados: dict[str, list[ICriatura]]):
+    def checar_morte(self, dados: BatalhaData):
         """Verifica se algum inimigo morreu e remove ele do combate."""
         inimigos_vivos: list[ICriatura] = []
         jogadores_vivos: list[ICriatura] = []
@@ -56,116 +50,72 @@ class Batalha(IBatalha):
         criaturas_vivas['inimigos'] = list(inimigos_vivos)
         criaturas_vivas['jogadores'] = list(jogadores_vivos)
 
-        self.dados.update(criaturas_vivas)
+        self.dados['inimigos'] = criaturas_vivas['inimigos']
+        self.dados['jogadores'] = criaturas_vivas['jogadores']
 
 
-    def get_atributos_mensagens(self, dados: dict[str, list[ICriatura]]) -> list[IData]:
+    def randomizar_turno(self) -> None:
         
-        mensagens: list[IData] = []
-
-        mensagens.append(self.data_factory.criar('view', {'titulo': 'inimigos'}))
-
-        for inimigo in dados['inimigos']:
-            atributos  = inimigo.get_atributos()
-            mensagens.append(self.data_factory.criar('view', atributos))
-
-        mensagens.append(self.data_factory.criar('view', {'titulo': 'jogadores'}))
-
-        for jogador in dados['jogadores']:
-            atributos = jogador.get_atributos()
-            mensagens.append(self.data_factory.criar('view', atributos))
-
-        return mensagens
-
-
-    def acoes_to_mensagens(self, acoes: dict[int, Callable[[ICriatura], list[ICommand]]]) -> IData:
-        mensagem_dict: dict[str, str] = {}
+        criaturas: list[ICriatura] = self.dados['inimigos'] + self.dados['jogadores']
         
-        for chave, valor in acoes.items():
-            mensagem_dict[str(chave)] = valor.__name__
-        
-        mensagem: IData = self.data_factory.criar('view', mensagem_dict)
+        shuffle(criaturas)
 
-        return mensagem
+        self.dados['ordem_turnos'] = list(criaturas)
 
 
-    def mostrar_mensagens(self, mensagens: list[IData]):
-        for mensagem in mensagens:
-            self.tela.mostrar(mensagem)
-
-
-    def get_alvo(self, dados: dict[str, list[ICriatura]]) -> ICriatura:           
-            mensagens: list[IData] = convert_to_message([{
-                '': 'Deseja acertar um jogador ou um inimigo?'
-            }, {'1': 'jogador'}, {'2': 'inimigo'}], self.data_factory, 'BatalhaController')
-
-            self.mostrar_mensagens(mensagens)
-            tipo_alvo = self.tela.get_input([1,2])
-
-            if tipo_alvo == 1:
-                tipo_alvo = 'jogadores'
-            else:
-                tipo_alvo = 'inimigos'
-            
-            mensagens = convert_to_message(
-                {chave: criatura.get_nome() for chave, criatura in enumerate(dados[tipo_alvo])}, self.data_factory,
-                ' batalhaController.')
-            
-            self.mostrar_mensagens(mensagens)
-            escolha = self.tela.get_input()
-
-            alvo = dados[tipo_alvo][escolha]
-            
-            return alvo
-
-
-    def iniciar(self) -> str:
+    def iniciar(self) -> None:
         """Inicia o loop de Batalha
         
         Returns:
             Criatura: Retorna quem venceu a batalha.
         """
-        dados = self.dados.get_data()
 
-        dados = cast(dict[str, list[ICriatura]], dados)
-
+        self.battle_start_notify(self.dados)
 
         #Começa o loop de batalha
-        while len(dados['jogadores']) > 0 and len(dados['inimigos']) > 0:
-            for lista_criaturas in dados.values():
-                for criatura in lista_criaturas:
-                    
-                    mensagens = self.get_atributos_mensagens(dados)
-                    self.mostrar_mensagens(mensagens)
-                    
+        while len(self.dados['jogadores']) > 0 and len(self.dados['inimigos']) > 0:
+            self.randomizar_turno()
+            for criatura in self.dados['ordem_turnos']:
+                
+                acoes = criatura.get_acoes()
 
-                    acoes = criatura.get_acoes()
-                    self.tela.mostrar(self.acoes_to_mensagens(acoes))
-                    
-                    
-                    escolha = self.tela.get_input(list(acoes.keys()))
-                    alvo = None
+                turn_start_data: BatalhaInicioTurno = {
+                    'criaturas': self.dados,
+                    'criatura_atual': criatura,
+                    'acoes_disponiveis': acoes
+                }
 
-                    if 'alvo' in signature(acoes[escolha]).parameters:
-                        if criatura in dados['jogadores']:
-                            alvo = self.get_alvo(dados)
-                        else:
-                            estrategia = self.strategy_factory.criar('random_agressive', conjurador=criatura)
-                            alvo = estrategia.escolher_alvo(dados)
+                self.turn_start_notify(turn_start_data)
+                 
+                comandos: list[ICommand] = criatura.executar_acao(
+                    self.jogador_escolhas['acao_escolhida'].getValue(),
+                    self.jogador_escolhas['alvo_selecionado']
+                    )
+                
+                acoes_executadas: list[dict[str, Union[str, int]]] = []
+                
+                for comando in comandos:
+                    acao_executada = comando.executar()
+                    acoes_executadas.append(acao_executada)
+                
+                self.checar_morte(self.dados)
 
-                    comandos: list[ICommand] = criatura.executar_acao(escolha, alvo)
-                    
-                    for comando in comandos:
-                        mensagem = comando.executar()
-                        self.mostrar_mensagens(mensagem)
-                    
-                    self.checar_morte(dados)
+                turn_end_data: BatalhaFinalTurno = {
+                    'acoes_executadas': acoes_executadas,
+                    'criatura_atual': criatura,
+                    'criaturas': self.dados
+                }
 
-                    input("Aperte ENTER para continuar...")
-                    self.tela.limpar_tela()
+                self.turn_end_notify(turn_end_data)
             
-        if len(dados['inimigos']) > 0:
-            return 'inimigos'
+        
+        if len(self.dados['inimigos']) > 0:
+            end_battle_data: BatalhaFinal = {
+            'criaturas': self.dados['inimigos']
+            }
         else:
-            return 'jogadores'
+            end_battle_data: BatalhaFinal = {
+                'criaturas': self.dados['jogadores']
+            }
 
+        self.battle_end_notify(end_battle_data)

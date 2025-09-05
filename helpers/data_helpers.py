@@ -1,30 +1,9 @@
 #Funções genéricas para manipulação de dados
 #libs
-from typing import Any, Union
-from interfaces import ICriatura, IData, IDataFactory
+from typing import Any
+from interfaces import ICriatura
 
 #Defs
-def convert_to_message(dados: Union[dict[Any, Any], list[dict[Any, Any]]], data_factory: IDataFactory, assinatura_erro: str) -> list[IData]:
-    try:
-        messages: list[IData] = []
-
-        if isinstance(dados, list):
-            for item in dados:
-                item = convert_to_str(item, 'convert to message.')
-                mensagem = data_factory.criar('view', item)
-                messages.append(mensagem)
-        else:
-            dados = convert_to_str(dados, 'convert to message')
-            mensagem = data_factory.criar('view', dados)
-            messages.append(mensagem)
-        
-        return messages
-    
-    except Exception as erro:
-        print(assinatura_erro)
-        raise erro
-
-
 def convert_to_str(dados: dict[Any, Any], assinatura_erro: str) -> dict[str, str]:
     dados_convertidos: dict[str, str] = {}
     try:

@@ -1,42 +1,44 @@
 #Controi as telas de batalhas.
 #libs
-from interfaces import IView, IData
+from interfaces import IView, Escolha, IViewSubject, IViewSubscriber, Escolhas
 from os import name, system
-from typing import Any, cast
 from time import sleep
 
 #Classes
-class View (IView):
+class View (IView, IViewSubject):
     """Gerencia a tela de batalha"""
     def __init__(self) -> None:
-        pass
+        self.observers: list[IViewSubscriber] = []
 
 
-    def mostrar(self, dados: IData) -> None:
-        mensagem: dict[Any, Any] = dados.get_data()
-        cast(dict[str, str], mensagem)
+    def subscribe(self, subscriber: IViewSubscriber) -> None:
+        self.observers.append(subscriber)
+    
 
-        for nome, valor in mensagem.items():
-            nome.replace('_', ' ')
-            print(f'{nome}: {valor}')
+    def unsubscribe(self, subscriber: IViewSubscriber) -> None:
+        self.observers.remove(subscriber)
+
+
+    def get_input_notify(self, escolha: Escolhas) -> None:
+        for observer in self.observers:
+            observer.get_input_update(escolha)
 
     
-    def get_input(self, check: list[int] | None = None) -> int:
+    def get_input(self, check: list[int] | None = None) -> Escolha:
         while True:
             escolha = input()
-
-            escolha.strip()
-
-            if escolha.isdigit() == False:
-                print('Ops, sua escolha não contem apenas números!')
+            
+            try:
+                escolha = Escolha(escolha)
+                valor = escolha.getValue()
+            except:
+                print('Escolha inválida, por favor digite apenas números!')
                 continue
-
-            escolha = int(escolha)
 
             if check == None:
                 return escolha
 
-            if escolha < 0 or escolha >= check.__len__():
+            if valor < 0 or valor >= check.__len__():
                 print('Escolha inválida, por favor tente novamente!')
                 continue
 

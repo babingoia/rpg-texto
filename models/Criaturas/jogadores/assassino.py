@@ -1,15 +1,13 @@
 #Classe para o assassino
-#Libs
-from gerenciadores import Batalha
-from ..base import Jogador
 from typing import Callable
-from configuracoes import ASSASSINO, Cores, Combate
-
+from ...configuracoes.outras_configs import Combate
+from ...configuracoes.criaturas.configurações_jogadores import ASSASSINO
+from interfaces import ICriatura
 
 #classes
-class Assassino(Jogador):
-    def __init__(self, batalha: Batalha | None = None) -> None:
-        super().__init__(batalha)
+class Assassino(ICriatura):
+    def __init__(self) -> None:
+        super().__init__()
         self.nome = ASSASSINO.NOME
         self.vida: int = ASSASSINO.VIDA
         self.acoes_ataque: dict[int, Callable[[], int]] = {

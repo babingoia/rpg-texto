@@ -54,3 +54,32 @@ Vou anotar pequenas otimizações possíveis.
 -> Arrumar lich
 -> Os commands ainda estão executando mensagens...
 -> Criar uma factory de comandos
+-> Criar typedDicts no lugar dos dicionários comuns.
+-> Fazer o controller se comunicar com o AtributosBase
+-> Tem muito trampo da view dentro do controller.
+
+ATUALIZACOES 04/09
+
+-> Colocar tudo que acontece num turno dentro de uma data e tentar tipar o máximo possível.
+-> Notificar a view com observer no final do turno passando essa data com tudo que aconteceu.
+-> Armazenar as mensagens únicas de cada criatura fora da models.
+-> Identificador único em cada criatura.
+-> Na view, simple factory + strategy via identificador único passado pelo batalha pra escolher quais mensagens mostra.
+-> Dar um jeito de formatar o resto das coisas na view.
+
+Acho que essa e a melhor solucao pra arrumar isso de maneira elegante.
+
+ATUALIZACOES 05/09
+-> Escrever a view de combate.
+-> Arrumar o ataque básico do paladino.
+-> Criar uma factory de comandos.
+-> Acho que acabou, só ir testando e arrumando até tudo funcionar dps.
+
+Tá, eu consegui tudo fazer tudo funcionar de maneira desacoplada no mvc com os ataques básicos, agr é só:
+
+-> Fazer a view de batalha mostrar os dados do final do turno e de batalha.
+-> Criar uma view para o menu inicial.
+-> Mover o setup inicial da main pro GameController.
+-> Arrumar os outros ataques.
+-> Colocar as mensagens personalizadas de cada ataque na main e usar um id duplo para buscar por elas com o nome da criatura + nome do ataque no command.
+-> Melhorar a classe de strategy para alvos.

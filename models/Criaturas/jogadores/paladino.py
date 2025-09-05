@@ -1,43 +1,51 @@
 # Classe Paladino
 #Libs
-from configuracoes import PALADINO, Combate
+from ...configuracoes.outras_configs import Combate
+from ...configuracoes.criaturas.configurações_jogadores import PALADINO
 from ..base import CriaturaBase
-from interfaces import ICriatura, ICommand
+from interfaces import ICriatura, ICommand, AtributosMagicos
 from typing import Callable
-from commands import CommandAtaqueBasico
+from ...commands.ataques import CommandAtaqueBasico
 
 
 
-class Paladino(CriaturaBase):
+class Paladino(CriaturaBase[AtributosMagicos]):
     """Classe especifica para criar um paladino."""
-    def __init__(self, configuracoes: PALADINO = cfg):
+    def __init__(self, configuracoes: PALADINO = PALADINO()):
         """Cria uma instância de paladino com suas características básicas."""
-        super().__init__(configuracoes.NOME, configuracoes.ATRIBUTOS)
+        super().__init__(configuracoes.nome, configuracoes.atributos)
 
         self.configuracoes = configuracoes
 
-        self.acoes: dict[int, Callable[[ICriatura], list[ICommand]]] = {
-            configuracoes.ATAQUE_BASICO['id']: lambda alvo: self.atacar(alvo),
-            configuracoes.ATAQUE_ESPECIAL['id']: lambda alvo: self.ataque_especial(alvo),
-            configuracoes.RECUPERAR_FOLEGO['id']: lambda: self.recuperar_folego()
+        self.acoes: dict[int, Callable[[ICriatura | None], list[ICommand]]] = {
+            int(configuracoes.ataques['ataque_basico']['id']): lambda alvo: self.atacar(alvo),
+            int(configuracoes.ataques['ataque_especial']['id']): lambda alvo: self.ataque_especial(alvo),
+            int(configuracoes.ataques['recuperar_folego']['id']): lambda not_alvo = None: self.recuperar_folego(not_alvo)
         }
+
+        self.acoes[1].__name__ = 'ataque_basico'
+        self.acoes[2].__name__ = 'ataque_especial'
+        self.acoes[3].__name__ = 'recuperar_folego'
         
 
     #Acoes
-    def atacar(self, alvo: ICriatura) -> list[ICommand]:
+    def atacar(self, alvo: ICriatura | None) -> list[ICommand]:
         """Ataque básico do paladino em combate."""
+        if alvo == None:
+            raise ValueError("Alvo inválido no momento do ataque!")
         
         rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
-        comandos: list[ICommand] = [CommandAtaqueBasico(self.nome, rolagem, self.configuracoes.ATAQUE_BASICO, alvo)]
+        comandos: list[ICommand] = [CommandAtaqueBasico(rolagem, self.configuracoes.ataques['ataque_basico'], alvo)]
 
 
         if rolagem == Combate.CRITICO:
-            self.atributos['mana_atual'] += min(self.atributos['mana_maxima'], self.atributos['mana_maxima'] + self.configuracoes.ATRIBUTOS['restauracao_mana_critico'])
+            self.atributos['mana_atual'] += min(self.atributos['mana_maxima'], self.atributos['mana_maxima'] + self.configuracoes.atributos['restauracao_mana_critico'])
 
 
         return comandos
 
-    def recuperar_folego(self) -> None:
+
+    def recuperar_folego(self) -> list[ICommand]:
         """Ação de cura do paladino em combate."""
         cura = self.rolar_dados(PALADINO.TIPO_DADO_RECUPERAR_FOLEGO,PALADINO.QUANTIDADE_DADOS_RECUPERAR_FOLEGO)
         print(f'\nVocê respira fundo e consegue recuperar parte da sua força.\n[[Curou {cura} de vida]]\n[[Recuperou 1 de stamina]]')
@@ -46,7 +54,7 @@ class Paladino(CriaturaBase):
         self.mana += PALADINO.RESTAURACAO_MANA_RECUPERAR_FOLEGO
 
 
-    def ataque_especial(self) -> int:
+    def ataque_especial(self) -> list[ICommand]:
         """Ataque especial do paladino em combate."""
         if self.mana < PALADINO.CUSTO_ATAQUE_ESPECIAL:
             print("Mana insuficiente! Turno perdido...")
@@ -69,7 +77,3 @@ class Paladino(CriaturaBase):
         else:
             print('\nVocê acerta seu golpe no alvo!\n[[Causou 25 de dano]]')
             return PALADINO.DANO_ATAQUE_ESPECIAL
-
-
-    def executar_acao(self, acao: int, alvo: ICriatura) -> list[ICommand]:
-        comandos: list[ICommand] = self.acoes[acao]()

@@ -1,2 +1,2 @@
-from .interfaces import ICriatura, IBatalha, ICommand, IView, IData, IDataFactory, IViewFactory, IAtaqueStrategy, IAtaqueStrategyFactory, ICriaturaFactory
-from .dtos import DataFactory
+from .interfaces import ICriatura, IBatalha, ICommand, IView, IViewFactory, IAtaqueStrategy, IAtaqueStrategyFactory, ICriaturaFactory, IBatalhaSubject, IBatalhaSubscriber, IViewSubject, IViewSubscriber
+from .DTOS import ViewData, BatalhaData, AtributosBase, AtributosMagicos, BatalhaFinal, BatalhaFinalTurno, BatalhaInicioTurno, Escolha, Escolhas
