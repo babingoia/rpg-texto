@@ -1,7 +1,7 @@
 #Classe que cria alguma criatura.
 
 #libs
-from ..configuracoes.outras_configs import ConfigFactoryCriarCriaturas
+from ...game_data.outras_configs import ConfigFactoryCriarCriaturas
 from interfaces import ICriatura, ICriaturaFactory
 
 cfg = ConfigFactoryCriarCriaturas()

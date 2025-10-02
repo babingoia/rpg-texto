@@ -2,7 +2,7 @@
 #Libs
 from typing import Callable
 from ...configuracoes.criaturas.configurações_inimigos import LICH, ESQUELETO
-from ...configuracoes.outras_configs import Combate
+from game_data import Combate
 from ...commands.ataques import CommandAtaqueBasico, CommandInvocarCriatura
 from interfaces import ICommand, ICriatura, AtributosBase
 from ..base import CriaturaBase
@@ -17,12 +17,12 @@ class Esqueleto(CriaturaBase[AtributosBase]):
 
         self.config = config
         
-        self.acoes: dict[int, Callable[[ICriatura | None], list[ICommand]]] = {
+        self.acoes: dict[int, Callable[[list[ICriatura] | None], list[ICommand]]] = {
             int(config.ataques['ataque_basico']['id']): lambda alvo: self.atacar(alvo)
         }
 
 
-    def atacar(self, alvo: ICriatura | None) -> list[ICommand]:
+    def atacar(self, alvo: list[ICriatura] | None) -> list[ICommand]:
         """Lógica para um ataque básico de espada."""
         if alvo == None:
             raise ValueError('Ops, alvo = None.')
@@ -41,25 +41,28 @@ class Lich(CriaturaBase[AtributosBase]):
         self.config = config
         
         self.acoes = {
-            int(self.config.ataques['ataque_basico']['id']): lambda alvo: self.atacar(alvo),
-            int(self.config.ataques['invocar_esqueleto']['id']): lambda not_alvo = None: self.invocar_esqueleto()
+            # int(self.config.ataques['ataque_basico']['id']): lambda alvo: self.atacar(alvo),
+            int(self.config.ataques['ataque_basico']['id']): lambda alvos: self.invocar_esqueleto(alvos)
         }
         
 
     #Ações
-    def invocar_esqueleto(self) -> list[ICommand]:
+    def invocar_esqueleto(self, alvos: list[ICriatura] | None) -> list[ICommand]:
         """Invoca um esqueleto e o adiciona a instância da batalha atual."""
+        if alvos == None:
+            raise ValueError("Alvo inválido!")
         
         rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
-        comandos: list[ICommand] = [CommandInvocarCriatura('esqueleto', rolagem, self.config.ataques['invocar_esqueleto'], )]
+        comandos: list[ICommand] = [CommandInvocarCriatura('esqueleto', rolagem, self.config.ataques['invocar_esqueleto'], alvos)]
 
         return comandos
     
 
-    def atacar(self, alvo: ICriatura | None) -> list[ICommand]:
+    def atacar(self, alvo: list[ICriatura] | None) -> list[ICommand]:
         """Lógica para um ataque básico de espada."""
         if alvo == None:
             raise ValueError("Ops, alvo = None.")
+        
         rolagem = self.rolar_dados(Combate.ROLAGEM_PADRAO, 1)
 
         comandos: list[ICommand] = [CommandAtaqueBasico(rolagem, self.config.ataques['ataque_basico'], alvo)]

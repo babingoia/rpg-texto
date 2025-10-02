@@ -1,0 +1,1 @@
+from .outras_configs import Combate, ConfigFactoryCriarCriaturas, Dados

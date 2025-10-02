@@ -1,7 +1,7 @@
 #Configurações específicas de inimigos.
 #libs
 from typing import Union
-from ..outras_configs import Combate
+from ....game_data.outras_configs import Combate
 from interfaces import AtributosBase
 
 #Classes

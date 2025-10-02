@@ -25,5 +25,12 @@ class Escolha():
         return escolha
     
 
+    def checar_intervalo(self, minimo: int, maximo: int) -> bool:
+        if self.escolha < minimo or self.escolha > maximo:
+            return False
+        
+        return True
+    
+
     def getValue(self) -> int:
         return self.escolha

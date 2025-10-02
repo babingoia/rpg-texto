@@ -1,0 +1,2 @@
+from .consumir_atributo import CommandConsumirAtributo
+from .recuperar_atributo import CommandRecuperarAtributo

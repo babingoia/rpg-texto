@@ -1,0 +1,1 @@
+from .command_ataque_basico import CommandAtaqueBasico

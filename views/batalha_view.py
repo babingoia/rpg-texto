@@ -1,6 +1,6 @@
 #View para batalhas.
 #Libs
-from interfaces import BatalhaData, BatalhaFinal, BatalhaFinalTurno, BatalhaInicioTurno, IBatalhaSubscriber, IAtaqueStrategyFactory
+from interfaces import BatalhaData, BatalhaFinal, BatalhaFinalTurno, BatalhaInicioTurno, IBatalhaSubscriber, IAtaqueStrategyFactory, ICriatura
 from .base.view import View
 from .strategys import AtaqueStrategyFactory
 from .configurações import Cores
@@ -13,6 +13,22 @@ class BatalhaView(View, IBatalhaSubscriber):
         self.strategy_factory = strategy_factory
 
 
+    def mostrar_atributos(self, criaturas: list[ICriatura], cor: str, titulo: str) -> None:
+
+        print(f"{cor} {titulo}:\n")
+        for criatura in criaturas:
+            atributos = criatura.get_atributos()
+            print(f'\n {cor}{criatura.get_nome()} \n:')
+            
+            for atributo, valor in atributos.items():
+                if atributo.endswith('_maxima') or atributo.endswith('_maximo'):
+                    continue
+
+                atributo = atributo.replace('_atual', ' ')
+                atributo = atributo.replace('_', ' ')
+                print(f"{cor}{atributo}: {valor}")
+
+
     def mostrar_status_globais(self, data: BatalhaData):
         print(f'{Cores.RESET} Todos se movem rapidamente, os turnos ficam nessa ordem:\n')
         
@@ -21,30 +37,8 @@ class BatalhaView(View, IBatalhaSubscriber):
         
         print(f'{Cores.RESET} \n Status das Criaturas: \n')
 
-        print(f"{Cores.RED} Inimigos:\n")
-        for inimigo in data['inimigos']:
-            atributos = inimigo.get_atributos()
-            print(f'{Cores.RED}{inimigo.get_nome()}:')
-            
-            for atributo, valor in atributos.items():
-                if atributo.endswith('_maxima') or atributo.endswith('_maximo'):
-                    continue
-
-                atributo = atributo.replace('_atual', ' ')
-                print(f"{Cores.RED}{atributo}: {valor}")
-        
-
-        print(f'{Cores.GREEN} \n Jogadores: \n')
-        for jogador in data['jogadores']:
-            atributos = jogador.get_atributos()
-            print(f'{Cores.GREEN}{jogador.get_nome()}')
-
-            for atributo, valor in atributos.items():
-                if atributo.endswith('_maxima') or atributo.endswith('_maximo'):
-                    continue
-
-                atributo = atributo.replace('_atual', ' ')
-                print(f'{Cores.GREEN}{atributo}: {valor}')
+        self.mostrar_atributos(data['inimigos'], Cores.RED, 'Inimigos')
+        self.mostrar_atributos(data['jogadores'], Cores.GREEN, 'Aliados')
         
         input("Pressione enter para continuar...")
 
@@ -59,6 +53,7 @@ class BatalhaView(View, IBatalhaSubscriber):
         self.contagem_regressiva(3)
         print(f'{Cores.RED}E não há mais como escapar!')
         input('Digite enter para continuar...')
+        self.limpar_tela()
 
     
 

@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 #SubClasses
 class Escolhas(TypedDict):
     acao_escolhida: Escolha
-    alvo_selecionado: Union['ICriatura', None]
+    alvo_selecionado: Union[list['ICriatura'], None]
 
 
 class BatalhaData(TypedDict):
@@ -23,7 +23,7 @@ class BatalhaInicioTurno(TypedDict):
     """Dicionário tipado. Contém informações do inicio de turno da batalha."""
     criaturas: BatalhaData
     criatura_atual: 'ICriatura'
-    acoes_disponiveis: dict[int, Callable[['ICriatura | None'], list['ICommand']]]
+    acoes_disponiveis: dict[int, Callable[['list[ICriatura] | None'], list['ICommand']]]
 
 
 class BatalhaFinalTurno(TypedDict):

@@ -1,6 +1,6 @@
 #Classe do clérigo
 #libs
-from ...configuracoes.outras_configs import Combate
+from ....game_data.outras_configs import Combate
 from ...configuracoes.criaturas.configurações_jogadores import CLERIGO
 from interfaces import ICriatura
 

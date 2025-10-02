@@ -1,6 +1,6 @@
 #Classe para o assassino
 from typing import Callable
-from ...configuracoes.outras_configs import Combate
+from ....game_data.outras_configs import Combate
 from ...configuracoes.criaturas.configurações_jogadores import ASSASSINO
 from interfaces import ICriatura
 

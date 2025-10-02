@@ -1,1 +1,1 @@
-from .comand import Command
+from .command_base import CommandBase

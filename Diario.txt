@@ -83,3 +83,33 @@ Tá, eu consegui tudo fazer tudo funcionar de maneira desacoplada no mvc com os 
 -> Arrumar os outros ataques.
 -> Colocar as mensagens personalizadas de cada ataque na main e usar um id duplo para buscar por elas com o nome da criatura + nome do ataque no command.
 -> Melhorar a classe de strategy para alvos.
+
+ATUALIZACOES 06/09
+Tá, eu tenho um problema com a parte de selecionar alvos. Ela é muito dificil sem ter dados sobre os ataques
+e não tem como eu mudar pra dentro das classes pq a responsabilidade de gerenciar os inputs é da view. Entao eu
+preciso ter uma IA minimamente inteligênte que joga um ataque em área nos jogadores mas não invoca esqueletos no
+time deles. Pra isso, o plano é o seguinte:
+
+-> Criar uma gamedata com todas as informações númericas dos ataques.
+-> Copiar parte dessa gamedata pra um arquivo de config que as criaturas na model podem usar.
+-> Identificar os ataques e conversar com a view através desses identificadores.
+-> View consegue checar oq precisa na gamedata através desses identificadores.
+-> Colocar na gamedata informações sobre como usar os ataques.
+-> Usar esse identificador do ataque concatenado com o identificador da criatura pra criar uma data de textos
+personalizados para cada ataque de cada criatura na view.
+-> Usar esse identificador pra buscar na gamedata as informações de como usar os ataques.
+
+Acho que com isso o model não copia as mensagens que não precisa e a view continua super personalizada no texto,
+além de conseguir acessar informações sobre como usar os ataques na data e ter um input coerente dos inimigos.
+Ou seja:
+
+-> Um arquivo persistênte de configurações que todo mundo pode acessar.
+-> Uma classe instanciável na model de configurações que puxa as infos importantes da gamedata.
+-> Uma classe instanciável na view de configurações que puxa os textos personalizados e as informações de como 
+usar o ataque.
+
+É isso, acho que resolve meu problema acoplando só o suficiente.
+
+-> Trocar os objetos que o controller manda pra view pra tipos mais simples.
+-> OVERLOAD È OP PROS EVENTS. Implementar dps.
+-> Mover todo o possível da inteligência da view pro controller.

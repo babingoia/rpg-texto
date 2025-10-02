@@ -42,4 +42,3 @@ class Combate:
     DELAY_CURTO: int = 1
     DELAY_MEDIO: int = 3
     DELAY_LONGO: int = 5
-

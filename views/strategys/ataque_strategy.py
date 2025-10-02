@@ -8,10 +8,6 @@ from helpers import validar_chaves_dicionario
 from inspect import signature
 
 #Classes
-class BaseAtaqueStrategy(IAtaqueStrategy):
-    pass
-
-
 class RandomAgressiveStrategy(IAtaqueStrategy):
     def __init__(self, conjurador: ICriatura) -> None:
         self.conjurador: ICriatura = conjurador
@@ -26,86 +22,83 @@ class RandomAgressiveStrategy(IAtaqueStrategy):
         quantidade_acoes = len(data['acoes_disponiveis'].values())
 
         acao_escolhida = randint(1, quantidade_acoes)
+        acao_escolhida = Escolha(acao_escolhida)
+        inimigos: list[ICriatura] = data['criaturas']['jogadores']
 
-        if 'not_alvo' in signature(data['acoes_disponiveis'][acao_escolhida]).parameters:
+        if 'alvos' in signature(data['acoes_disponiveis'][acao_escolhida.getValue()]).parameters:
+            alvos = inimigos
+
             escolhas = {
-                'acao_escolhida': Escolha(acao_escolhida),
+                'acao_escolhida': acao_escolhida,
+                'alvo_selecionado': alvos
+            }
+
+            return escolhas
+        
+        elif 'alvo' in signature(data['acoes_disponiveis'][acao_escolhida.getValue()]).parameters:
+
+            escolha = randint(0, len(inimigos) - 1)
+
+            alvo = inimigos[escolha]
+
+            escolhas = {
+                'acao_escolhida': acao_escolhida,
+                'alvo_selecionado': [alvo]
+            }
+
+            return escolhas
+        
+        else:
+            escolhas = {
+                'acao_escolhida': acao_escolhida,
                 'alvo_selecionado': None
             }
 
             return escolhas
 
-        inimigos: list[ICriatura] = data['criaturas']['jogadores']
-
-        escolha = randint(0, len(inimigos) - 1)
-
-        alvo = inimigos[escolha]
-
-        escolhas = {
-            'acao_escolhida': Escolha(acao_escolhida),
-            'alvo_selecionado': alvo
-        }
-
-        return escolhas
         
 
 class PlayerStrategy(IAtaqueStrategy):
 
-    def escolher_acao(self, data: BatalhaInicioTurno) -> Escolha:
+    def get_escolha(self, minimo: int, maximo: int) -> Escolha:
+        escolha: Escolha
+
         while True:
-            escolha = input()
-            
+            valor = input()
             try:
-                escolha = Escolha(escolha)
+                escolha = Escolha(valor)
             except:
-                print('Escolha de ação inválida, por favor digite apenas números.')
+                print('Ops, parece que você digitou um valor incorreto. Por favor tente novamente.')
                 continue
 
-            if escolha.getValue() >= 0 and escolha.getValue() <= len(data['acoes_disponiveis']):
-                break
-        
-        return escolha
+            in_inteval = escolha.checar_intervalo(minimo, maximo)
+
+            if not in_inteval:
+                print('Hum... seu valor parece não estar no range.')
+                continue
+
+            return escolha
 
 
     def escolher_alvo(self, data: BatalhaInicioTurno) -> ICriatura:
         print(f"{Cores.RESET} Deseja selecionar qual tipo de alvo?")
-        print(f"{Cores.GREEN} 1 - Aliados")
+        print(f'{Cores.GREEN} 1 - Aliados')
         print(f"{Cores.RED} 2 - Inimigos")
 
+        tipo_alvo_escolha: Escolha = self.get_escolha(1, 2)
+
         tipo_alvo: str
-        while True:
-            tipo_alvo_escolha = Escolha(input())
-            
-            if tipo_alvo_escolha.getValue() == 1:
-                tipo_alvo = 'jogadores'
 
-            elif tipo_alvo_escolha.getValue() == 2:
-                tipo_alvo = 'inimigos'
-            
-            else:
-                print('Ops, parece que você digitou um valor incorreto.')
-                continue
-
-            break
-
+        if tipo_alvo_escolha.getValue() == 1:
+            tipo_alvo = 'jogadores'
+        else:
+            tipo_alvo = 'inimigos'
         
         print('Deseja selecionar qual alvo?')
         for index, alvo in enumerate(data['criaturas'][tipo_alvo]):
             print(f'{index}: {alvo.get_nome()}')
         
-        alvo_escolha: Escolha
-        while True:
-            try:
-                alvo_escolha = Escolha(input())
-            except:
-                print('Ops, alvo inválido! Por favor digite apenas números.')
-                continue
-            
-            if alvo_escolha.getValue() < 0 or alvo_escolha.getValue() > len(data['criaturas'][tipo_alvo]):
-                print('Hum... alvo fora do range, por favor digite o valor correto.')
-                continue
-            
-            break
+        alvo_escolha: Escolha = self.get_escolha(0, len(data['criaturas'][tipo_alvo]))
 
         alvo = data['criaturas'][tipo_alvo][alvo_escolha.getValue()]
         return alvo
@@ -119,7 +112,7 @@ class PlayerStrategy(IAtaqueStrategy):
         for index, acao in data['acoes_disponiveis'].items():
             print(f'{index}: {acao.__name__}')
 
-        acao_escolhida = self.escolher_acao(data)
+        acao_escolhida = self.get_escolha(0, len(data['acoes_disponiveis']))
 
         if 'not_alvo' in signature(data['acoes_disponiveis'][acao_escolhida.getValue()]).parameters:
             escolhas: Escolhas = {
@@ -129,11 +122,10 @@ class PlayerStrategy(IAtaqueStrategy):
             return escolhas 
 
         alvo = self.escolher_alvo(data)
-        
 
         escolhas = {
             'acao_escolhida': acao_escolhida,
-            'alvo_selecionado': alvo
+            'alvo_selecionado': [alvo]
         }
         
         return escolhas

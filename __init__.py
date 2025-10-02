@@ -4,3 +4,4 @@ from .factorys import FactoryCriatura
 from views import ViewFactory, Cores
 from helpers import validar_lista_criatura, validar_chaves_dicionario, validar_dict_lista_criaturas, convert_to_str, convert_to_message
 from .controllers import Batalha, PlayerStrategy, AtaqueStrategyFactory
+from .game_data import *

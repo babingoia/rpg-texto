@@ -76,10 +76,10 @@ class ICriatura(ABC):
     def set_atributos(self, atributo: str, valor: int) -> None: pass
 
     @abstractmethod
-    def get_acoes(self) -> dict[int, Callable[[ 'ICriatura | None'], list[ICommand]]]: pass
+    def get_acoes(self) -> dict[int, Callable[[ 'list[ICriatura] | None'], list[ICommand]]]: pass
 
     @abstractmethod
-    def executar_acao(self, acao: int, alvo: Optional['ICriatura']) -> list[ICommand]: pass
+    def executar_acao(self, acao: int, alvo: Optional[list['ICriatura']]) -> list[ICommand]: pass
 
 
 class IBatalha(ABC):

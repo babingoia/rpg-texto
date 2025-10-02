@@ -1,6 +1,6 @@
 #Configurações específicas para jogadores.
 #libs
-from ..outras_configs import Combate, Dados
+from ....game_data.outras_configs import Combate, Dados
 from views import Cores
 from interfaces import AtributosMagicos
 from typing import Union

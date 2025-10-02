@@ -1,55 +1,12 @@
-#Commands de ataques
+#Comando de invocar criaturas.
 #Libs
-from interfaces import ICommand, ICriatura
-from ..configuracoes.outras_configs import Combate
-from ..factorys import FactoryCriatura
-from typing import Any, Union
+from interfaces import ICriatura
+from ..base import CommandBase
+from typing import Union
+from models import FactoryCriatura
+from game_data import Combate
 
-#Classes
-class CommandBase(ICommand):
-    def __init__(self, nome: str, rolagem: int, config: dict[str, Any], alvo: ICriatura | None = None) -> None:
-        self.nome = nome
-        self.rolagem = rolagem
-        self.config = config
-        self.alvo = alvo
-    
-    
-    def executar(self) -> dict[str, Union[str, int]]:
-        raise NotImplementedError
-
-
-class CommandAtaqueBasico(CommandBase):
-    """Ataque básico."""
-    def __init__(self, rolagem: int, config: dict[str,Union[str, int]], alvo: ICriatura) -> None:
-        super().__init__('ataque_basico', rolagem, config, alvo)
-
-
-    def executar(self) -> dict[str, Union[str, int]]:
-        if self.alvo == None:
-            raise ValueError("Alvo não encontrado!")
-        
-        dano: int = 0
-
-        if self.rolagem == Combate.FALHA:
-            dano = Combate.DANO_FALHA
-            
-        elif self.rolagem == Combate.CRITICO:
-            dano = self.config['dano'] * self.config['multiplicador_critico']
-            
-        else:
-            dano = self.config['dano']
-        
-        self.alvo.set_atributos('vida_atual', -1*dano)
-        
-        acao: dict[str, Union[str, int]] = {
-            'ataque': self.nome,
-            'dano': dano,
-            'rolagem': self.rolagem,
-        }
-
-        return acao
-
-
+#Comando
 class CommandInvocarCriatura(CommandBase):
     """Comando que executa a ação de invocar alguma criatura.
     """
@@ -94,3 +51,4 @@ class CommandInvocarCriatura(CommandBase):
         }
 
         return dados
+

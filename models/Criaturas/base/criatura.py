@@ -14,7 +14,7 @@ class CriaturaBase(ICriatura, Generic[A]):
     def __init__(self, nome: str, atributos: A) -> None:
         self.nome: str = nome
         self.atributos: A = atributos
-        self.acoes: dict[int, Callable[[ICriatura | None], list[ICommand]]]
+        self.acoes: dict[int, Callable[[list[ICriatura] | None], list[ICommand]]]
     
 
     def get_nome(self) -> str:
@@ -29,18 +29,21 @@ class CriaturaBase(ICriatura, Generic[A]):
         self.atributos[atributo] += valor
 
     
-    def get_acoes(self) -> dict[int, Callable[[ICriatura | None], list[ICommand]]]:
+    def get_acoes(self) -> dict[int, Callable[[list[ICriatura] | None], list[ICommand]]]:
         return self.acoes
 
 
-    def executar_acao(self, acao: int, alvo: Optional[ICriatura]) -> list[ICommand]:
+    def executar_acao(self, acao: int, alvo: Optional[list[ICriatura]]) -> list[ICommand]:
+
         if 'alvo' in signature(self.acoes[acao]).parameters:
             if alvo is None:
                 raise ValueError("Alvo não é válido.")
+            
             comandos = self.acoes[acao](alvo)
             return comandos
+        
         else:
-            comandos = self.acoes[acao](alvo) # type: ignore nesse caso acoes nem de alvo
+            comandos = self.acoes[acao](alvo)
             return comandos
     
 

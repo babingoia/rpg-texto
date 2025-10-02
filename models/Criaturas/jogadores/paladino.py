@@ -1,6 +1,6 @@
 # Classe Paladino
 #Libs
-from ...configuracoes.outras_configs import Combate
+from game_data import Combate
 from ...configuracoes.criaturas.configurações_jogadores import PALADINO
 from ..base import CriaturaBase
 from interfaces import ICriatura, ICommand, AtributosMagicos
@@ -17,7 +17,7 @@ class Paladino(CriaturaBase[AtributosMagicos]):
 
         self.configuracoes = configuracoes
 
-        self.acoes: dict[int, Callable[[ICriatura | None], list[ICommand]]] = {
+        self.acoes: dict[int, Callable[[list[ICriatura] | None], list[ICommand]]] = {
             int(configuracoes.ataques['ataque_basico']['id']): lambda alvo: self.atacar(alvo),
             int(configuracoes.ataques['ataque_especial']['id']): lambda alvo: self.ataque_especial(alvo),
             int(configuracoes.ataques['recuperar_folego']['id']): lambda not_alvo = None: self.recuperar_folego(not_alvo)
@@ -29,7 +29,7 @@ class Paladino(CriaturaBase[AtributosMagicos]):
         
 
     #Acoes
-    def atacar(self, alvo: ICriatura | None) -> list[ICommand]:
+    def atacar(self, alvo: list[ICriatura] | None) -> list[ICommand]:
         """Ataque básico do paladino em combate."""
         if alvo == None:
             raise ValueError("Alvo inválido no momento do ataque!")
@@ -45,7 +45,7 @@ class Paladino(CriaturaBase[AtributosMagicos]):
         return comandos
 
 
-    def recuperar_folego(self) -> list[ICommand]:
+    def recuperar_folego(self, alvo: list[ICriatura] | None = None) -> list[ICommand]:
         """Ação de cura do paladino em combate."""
         cura = self.rolar_dados(PALADINO.TIPO_DADO_RECUPERAR_FOLEGO,PALADINO.QUANTIDADE_DADOS_RECUPERAR_FOLEGO)
         print(f'\nVocê respira fundo e consegue recuperar parte da sua força.\n[[Curou {cura} de vida]]\n[[Recuperou 1 de stamina]]')
@@ -54,8 +54,11 @@ class Paladino(CriaturaBase[AtributosMagicos]):
         self.mana += PALADINO.RESTAURACAO_MANA_RECUPERAR_FOLEGO
 
 
-    def ataque_especial(self) -> list[ICommand]:
+    def ataque_especial(self, alvo: list[ICriatura] | None) -> list[ICommand]:
         """Ataque especial do paladino em combate."""
+        if alvo == None:
+            raise ValueError("Alvo inexistente.")
+        
         if self.mana < PALADINO.CUSTO_ATAQUE_ESPECIAL:
             print("Mana insuficiente! Turno perdido...")
             return 0
